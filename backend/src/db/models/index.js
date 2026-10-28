@@ -11,6 +11,7 @@ const Grupo = require('./grupo');
 const MiembroGrupo = require('./miembro-grupo');
 const Invitacion = require('./invitacion');
 const ParticipacionGasto = require('./participacion-gasto');
+const PagoEntreMiembros = require('./pago-entre-miembros');
 
 Usuario.hasMany(Categoria, { foreignKey: 'usuarioId' });
 Categoria.belongsTo(Usuario, { foreignKey: 'usuarioId' });
@@ -72,4 +73,5 @@ module.exports = {
   MiembroGrupo,
   Invitacion,
   ParticipacionGasto,
+  PagoEntreMiembros,
 };

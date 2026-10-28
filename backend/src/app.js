@@ -9,6 +9,7 @@ const notificacionesRoutes = require('./modules/notificaciones/notificaciones.ro
 const tarjetasRoutes = require('./modules/tarjetas/tarjetas.routes');
 const metasRoutes = require('./modules/metas/metas.routes');
 const gruposRoutes = require('./modules/grupos/grupos.routes');
+const saldosRoutes = require('./modules/saldos/saldos.routes');
 const invitacionesRoutes = require('./modules/grupos/invitaciones.routes');
 const { manejarErrores } = require('./middlewares/manejarErrores');
 
@@ -30,6 +31,7 @@ function createApp() {
   app.use('/api/tarjetas', tarjetasRoutes);
   app.use('/api/metas', metasRoutes);
   app.use('/api/grupos', gruposRoutes);
+  app.use('/api/grupos', saldosRoutes);
   app.use('/api/invitaciones', invitacionesRoutes);
   app.use(manejarErrores);
 

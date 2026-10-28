@@ -38,4 +38,12 @@ class ErrorNoAutenticado extends Error {
   }
 }
 
-module.exports = { ErrorValidacion, ErrorProhibido, ErrorNoEncontrado, ErrorConflicto, ErrorNoAutenticado };
+class ErrorInterno extends Error {
+  constructor(mensaje) {
+    super(mensaje);
+    this.name = 'ErrorInterno';
+    this.status = 500;
+  }
+}
+
+module.exports = { ErrorInterno, ErrorValidacion, ErrorProhibido, ErrorNoEncontrado, ErrorConflicto, ErrorNoAutenticado };
