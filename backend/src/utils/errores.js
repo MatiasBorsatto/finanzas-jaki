@@ -6,6 +6,14 @@ class ErrorValidacion extends Error {
   }
 }
 
+class ErrorProhibido extends Error {
+  constructor(mensaje) {
+    super(mensaje);
+    this.name = 'ErrorProhibido';
+    this.status = 403;
+  }
+}
+
 class ErrorNoEncontrado extends Error {
   constructor(mensaje) {
     super(mensaje);
@@ -30,4 +38,4 @@ class ErrorNoAutenticado extends Error {
   }
 }
 
-module.exports = { ErrorValidacion, ErrorNoEncontrado, ErrorConflicto, ErrorNoAutenticado };
+module.exports = { ErrorValidacion, ErrorProhibido, ErrorNoEncontrado, ErrorConflicto, ErrorNoAutenticado };
