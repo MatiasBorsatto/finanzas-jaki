@@ -3,6 +3,8 @@ const Categoria = require('./categoria');
 const Movimiento = require('./movimiento');
 const Presupuesto = require('./presupuesto');
 const Notificacion = require('./notificacion');
+const Tarjeta = require('./tarjeta');
+const Compra = require('./compra');
 
 Usuario.hasMany(Categoria, { foreignKey: 'usuarioId' });
 Categoria.belongsTo(Usuario, { foreignKey: 'usuarioId' });
@@ -20,4 +22,15 @@ Notificacion.belongsTo(Usuario, { foreignKey: 'usuarioId' });
 Presupuesto.hasMany(Notificacion, { foreignKey: 'presupuestoId' });
 Notificacion.belongsTo(Presupuesto, { foreignKey: 'presupuestoId' });
 
-module.exports = { Usuario, Categoria, Movimiento, Presupuesto, Notificacion };
+Usuario.hasMany(Tarjeta, { foreignKey: 'usuarioId' });
+Tarjeta.belongsTo(Usuario, { foreignKey: 'usuarioId' });
+Usuario.hasMany(Compra, { foreignKey: 'usuarioId' });
+Compra.belongsTo(Usuario, { foreignKey: 'usuarioId' });
+Tarjeta.hasMany(Compra, { foreignKey: 'tarjetaId' });
+Compra.belongsTo(Tarjeta, { foreignKey: 'tarjetaId' });
+Tarjeta.hasMany(Movimiento, { foreignKey: 'tarjetaId' });
+Movimiento.belongsTo(Tarjeta, { foreignKey: 'tarjetaId' });
+Compra.hasMany(Movimiento, { foreignKey: 'compraId' });
+Movimiento.belongsTo(Compra, { foreignKey: 'compraId' });
+
+module.exports = { Usuario, Categoria, Movimiento, Presupuesto, Notificacion, Tarjeta, Compra };

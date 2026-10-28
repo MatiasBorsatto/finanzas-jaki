@@ -82,4 +82,12 @@ function validarFiltros(query = {}) {
   return filtros;
 }
 
-module.exports = { validarCrear, validarEditar, validarFiltros, validarMes, validarUuid };
+module.exports = {
+  validarCrear,
+  validarEditar,
+  validarFiltros,
+  validarMes,
+  validarUuid,
+  validarFecha,
+  validarDescripcion,
+};
