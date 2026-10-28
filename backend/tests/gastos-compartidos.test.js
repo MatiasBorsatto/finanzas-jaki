@@ -121,4 +121,27 @@ describe('gastos compartidos', () => {
     await agentA.post(url()).send({ ...base(), participantes: [{ usuarioId: ids.x, monto: '100.00' }] });
     expect(await Movimiento.count({ where: { grupoId } })).toBe(antes);
   });
+
+  describe('aislamiento respecto a los endpoints personales', () => {
+    test('PATCH y DELETE de un gasto compartido responden 404; la lista personal no lo incluye', async () => {
+      const comp = (await agentA.post(url()).send(base())).body;
+      const pers = await agentA
+        .post('/api/movimientos')
+        .send({ tipo: 'gasto', monto: '5.00', fecha: '2026-10-02', descripcion: 'cafe' });
+      expect(pers.status).toBe(201);
+
+      expect((await agentA.patch('/api/movimientos/' + comp.id).send({ monto: '1.00' })).status).toBe(404);
+      expect((await agentA.delete('/api/movimientos/' + comp.id)).status).toBe(404);
+      expect(await Movimiento.count({ where: { id: comp.id } })).toBe(1);
+
+      const lista = await agentA.get('/api/movimientos?limit=100');
+      const idsLista = lista.body.items.map((m) => m.id);
+      expect(idsLista).not.toContain(comp.id);
+      expect(idsLista).toContain(pers.body.id);
+
+      const edit = await agentA.patch('/api/movimientos/' + pers.body.id).send({ monto: '6.00' });
+      expect(edit.status).toBe(200);
+      expect(edit.body.monto).toBe('6.00');
+    });
+  });
 });

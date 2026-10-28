@@ -15,7 +15,7 @@ async function verificarCategoria(usuarioId, categoriaId) {
 }
 
 async function obtenerPropio(usuarioId, id) {
-  const mov = await Movimiento.findOne({ where: { id, usuarioId } });
+  const mov = await Movimiento.findOne({ where: { id, usuarioId, alcance: 'personal' } });
   if (!mov) throw new ErrorNoEncontrado('Movimiento no encontrado');
   return mov;
 }
@@ -54,7 +54,7 @@ function rangoDelMes(mes) {
 }
 
 async function listarMovimientos(usuarioId, { mes, categoriaId, tipo, page = 1, limit = 20 } = {}) {
-  const where = { usuarioId };
+  const where = { usuarioId, alcance: 'personal' };
   if (mes) where.fecha = { [Op.between]: rangoDelMes(mes) };
   if (categoriaId) where.categoriaId = categoriaId;
   if (tipo) where.tipo = tipo;
