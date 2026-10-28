@@ -1,6 +1,7 @@
 <script setup>
 import { useRouter } from 'vue-router'
 import { useSesion } from '../stores/sesion.js'
+import CampanaNotificaciones from './CampanaNotificaciones.vue'
 
 const router = useRouter()
 const sesion = useSesion()
@@ -19,6 +20,7 @@ async function salir() {
   <div class="layout">
     <nav class="navegacion" aria-label="Principal">
       <strong class="marca">Finanzas Jaki</strong>
+      <CampanaNotificaciones />
       <RouterLink v-for="e in enlaces" :key="e.to" :to="e.to" class="enlace">{{ e.texto }}</RouterLink>
       <button class="enlace salir" type="button" @click="salir">Salir</button>
     </nav>

@@ -1,9 +1,10 @@
 const { Op } = require('sequelize');
-const { Presupuesto, Movimiento } = require('../../db/models');
+const { Presupuesto, Movimiento, Categoria } = require('../../db/models');
 const { ErrorNoEncontrado, ErrorValidacion } = require('../../utils/errores');
 const { sumar } = require('../../utils/dinero');
 const { rangoDelMes, verificarCategoria } = require('../movimientos/movimientos.service');
 const { calcularEstado } = require('./presupuestos.calculo');
+const { registrarAlertaPresupuesto } = require('../notificaciones/notificaciones.service');
 
 // En esta fase solo se admite solo_personal; con_compartidos se habilita más adelante.
 const REGLAS_PERMITIDAS = ['solo_personal'];
@@ -43,7 +44,7 @@ async function estadoPresupuestos(usuarioId, mes) {
     },
     attributes: ['categoriaId', 'monto'],
   });
-  return presupuestos.map((p) => {
+  const estados = presupuestos.map((p) => {
     const consumido = sumar(gastos.filter((g) => g.categoriaId === p.categoriaId).map((g) => g.monto));
     return {
       id: p.id,
@@ -55,6 +56,26 @@ async function estadoPresupuestos(usuarioId, mes) {
       ...calcularEstado({ montoLimite: p.montoLimite, consumido }),
     };
   });
+  await registrarAlertas(usuarioId, estados);
+  return estados;
+}
+
+// Una falla al registrar alertas nunca debe romper la consulta de presupuestos.
+async function registrarAlertas(usuarioId, estados) {
+  const conAlerta = estados.filter((e) => e.alerta);
+  if (conAlerta.length === 0) return;
+  try {
+    const categorias = await Categoria.findAll({ where: { id: conAlerta.map((e) => e.categoriaId) } });
+    for (const e of conAlerta) {
+      const nombre = categorias.find((c) => c.id === e.categoriaId)?.nombre ?? 'una categoría';
+      const mensaje = e.alerta === '100'
+        ? `Superaste el presupuesto de ${nombre} de ${e.mes}.`
+        : `Llegaste al 80% del presupuesto de ${nombre} de ${e.mes}.`;
+      await registrarAlertaPresupuesto(usuarioId, e.id, e.alerta, mensaje);
+    }
+  } catch (err) {
+    console.error('No se pudieron registrar las alertas de presupuesto:', err.name);
+  }
 }
 
 module.exports = { upsertPresupuesto, listarPresupuestos, eliminarPresupuesto, estadoPresupuestos };

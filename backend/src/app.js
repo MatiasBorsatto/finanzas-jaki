@@ -5,6 +5,7 @@ const usuarioRoutes = require('./modules/usuario/usuario.routes');
 const categoriasRoutes = require('./modules/categorias/categorias.routes');
 const movimientosRoutes = require('./modules/movimientos/movimientos.routes');
 const presupuestosRoutes = require('./modules/presupuestos/presupuestos.routes');
+const notificacionesRoutes = require('./modules/notificaciones/notificaciones.routes');
 const { manejarErrores } = require('./middlewares/manejarErrores');
 
 function createApp() {
@@ -21,6 +22,7 @@ function createApp() {
   app.use('/api/categorias', categoriasRoutes);
   app.use('/api/movimientos', movimientosRoutes);
   app.use('/api/presupuestos', presupuestosRoutes);
+  app.use('/api/notificaciones', notificacionesRoutes);
   app.use(manejarErrores);
 
   return app;
