@@ -1,3 +1,5 @@
+require('dotenv').config({ quiet: true });
+
 if (!process.env.JWT_SECRET) {
   throw new Error('Falta la variable de entorno JWT_SECRET');
 }

@@ -14,4 +14,20 @@ class ErrorNoEncontrado extends Error {
   }
 }
 
-module.exports = { ErrorValidacion, ErrorNoEncontrado };
+class ErrorConflicto extends ErrorValidacion {
+  constructor(mensaje) {
+    super(mensaje);
+    this.name = 'ErrorConflicto';
+    this.status = 409;
+  }
+}
+
+class ErrorNoAutenticado extends Error {
+  constructor(mensaje) {
+    super(mensaje);
+    this.name = 'ErrorNoAutenticado';
+    this.status = 401;
+  }
+}
+
+module.exports = { ErrorValidacion, ErrorNoEncontrado, ErrorConflicto, ErrorNoAutenticado };

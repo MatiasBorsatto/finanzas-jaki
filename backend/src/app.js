@@ -1,5 +1,8 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const authRoutes = require('./modules/auth/auth.routes');
+const usuarioRoutes = require('./modules/usuario/usuario.routes');
+const { manejarErrores } = require('./middlewares/manejarErrores');
 
 function createApp() {
   const app = express();
@@ -9,6 +12,10 @@ function createApp() {
   app.get('/api/health', (req, res) => {
     res.json({ estado: 'ok' });
   });
+
+  app.use('/api/auth', authRoutes);
+  app.use('/api/usuario', usuarioRoutes);
+  app.use(manejarErrores);
 
   return app;
 }
