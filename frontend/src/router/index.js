@@ -2,6 +2,7 @@ import { createRouter, createWebHistory, createMemoryHistory } from 'vue-router'
 import { useSesion } from '../stores/sesion.js'
 import LoginView from '../views/LoginView.vue'
 import RegistroView from '../views/RegistroView.vue'
+import MovimientosView from '../views/MovimientosView.vue'
 import LayoutPrincipal from '../components/LayoutPrincipal.vue'
 
 // Marcadores hasta que existan las vistas reales (tareas siguientes).
@@ -16,7 +17,7 @@ export const rutas = [
     meta: { requiereAuth: true },
     children: [
       { path: '', redirect: '/movimientos' },
-      { path: 'movimientos', name: 'movimientos', component: Pendiente('Movimientos'), meta: { requiereAuth: true } },
+      { path: 'movimientos', name: 'movimientos', component: MovimientosView, meta: { requiereAuth: true } },
       { path: 'presupuestos', name: 'presupuestos', component: Pendiente('Presupuestos'), meta: { requiereAuth: true } }
     ]
   },
