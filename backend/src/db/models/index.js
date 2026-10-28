@@ -10,6 +10,7 @@ const AporteMeta = require('./aporte-meta');
 const Grupo = require('./grupo');
 const MiembroGrupo = require('./miembro-grupo');
 const Invitacion = require('./invitacion');
+const ParticipacionGasto = require('./participacion-gasto');
 
 Usuario.hasMany(Categoria, { foreignKey: 'usuarioId' });
 Categoria.belongsTo(Usuario, { foreignKey: 'usuarioId' });
@@ -52,6 +53,11 @@ MiembroGrupo.belongsTo(Grupo, { foreignKey: 'grupoId' });
 Usuario.hasMany(MiembroGrupo, { foreignKey: 'usuarioId' });
 MiembroGrupo.belongsTo(Usuario, { foreignKey: 'usuarioId' });
 
+Grupo.hasMany(Movimiento, { foreignKey: 'grupoId' });
+Movimiento.belongsTo(Grupo, { foreignKey: 'grupoId' });
+Movimiento.hasMany(ParticipacionGasto, { foreignKey: 'movimientoId', as: 'participaciones' });
+ParticipacionGasto.belongsTo(Movimiento, { foreignKey: 'movimientoId' });
+
 module.exports = {
   Usuario,
   Categoria,
@@ -65,4 +71,5 @@ module.exports = {
   Grupo,
   MiembroGrupo,
   Invitacion,
+  ParticipacionGasto,
 };

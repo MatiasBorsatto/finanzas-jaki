@@ -65,6 +65,26 @@ function validarEditar(body = {}) {
   return datos;
 }
 
+function validarGastoCompartido(body = {}) {
+  const datos = {
+    pagadorId: validarUuid(body.pagadorId, 'pagadorId'),
+    monto: validarMonto(body.monto),
+    fecha: validarFecha(body.fecha),
+    descripcion: validarDescripcion(body.descripcion),
+    categoriaId: body.categoriaId ? validarUuid(body.categoriaId, 'categoriaId') : null,
+  };
+  if (body.participantes !== undefined && body.participantes !== null) {
+    if (!Array.isArray(body.participantes) || body.participantes.length === 0) {
+      throw new ErrorValidacion('participantes debe ser una lista no vacía');
+    }
+    datos.participantes = body.participantes.map((p) => ({
+      usuarioId: validarUuid(p?.usuarioId, 'usuarioId'),
+      monto: validarMonto(p?.monto),
+    }));
+  }
+  return datos;
+}
+
 function entero(valor, nombre) {
   if (typeof valor !== 'string' || !/^\d+$/.test(valor) || Number(valor) < 1) {
     throw new ErrorValidacion(`${nombre} inválido`);
@@ -85,6 +105,7 @@ function validarFiltros(query = {}) {
 
 module.exports = {
   validarCrear,
+  validarGastoCompartido,
   validarEditar,
   validarFiltros,
   validarMes,

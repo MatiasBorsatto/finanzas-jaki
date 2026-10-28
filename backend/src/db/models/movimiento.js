@@ -16,6 +16,8 @@ const Movimiento = sequelize.define(
     tarjetaId: { type: DataTypes.UUID, allowNull: true },
     compraId: { type: DataTypes.UUID, allowNull: true },
     metaId: { type: DataTypes.UUID, allowNull: true },
+    grupoId: { type: DataTypes.UUID, allowNull: true },
+    pagadorId: { type: DataTypes.UUID, allowNull: true },
   },
   { tableName: 'movimientos' }
 );

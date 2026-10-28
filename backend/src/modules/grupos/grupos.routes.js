@@ -1,10 +1,11 @@
 const { Router } = require('express');
 const { autenticar } = require('../../middlewares/autenticar');
 const { grupoAccesible } = require('../../middlewares/grupoAccesible');
-const { validarUuid } = require('../movimientos/movimientos.validation');
+const { validarUuid, validarGastoCompartido } = require('../movimientos/movimientos.validation');
 const { ErrorValidacion } = require('../../utils/errores');
 const service = require('./grupos.service');
 const invitaciones = require('./invitaciones.service');
+const compartidos = require('../movimientos/compartidos.service');
 
 const router = Router();
 router.use(autenticar);
@@ -62,6 +63,11 @@ router.delete('/:id/invitaciones/:invitacionId', grupoAccesible('admin'), async 
   const invitacionId = validarUuid(req.params.invitacionId, 'invitacionId');
   await invitaciones.cancelarInvitacion(req.usuario.id, invitacionId, req.grupoId);
   res.status(204).end();
+});
+
+router.post('/:id/gastos', grupoAccesible(), async (req, res) => {
+  const datos = validarGastoCompartido(req.body);
+  res.status(201).json(await compartidos.crearGastoCompartido(req.usuario.id, { ...datos, grupoId: req.grupoId }));
 });
 
 router.post('/:id/salir', grupoAccesible(), async (req, res) => {
