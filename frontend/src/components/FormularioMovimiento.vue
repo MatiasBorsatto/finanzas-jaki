@@ -4,6 +4,7 @@ import { normalizarMonto } from '../utils/formato.js'
 
 const props = defineProps({
   categorias: { type: Array, default: () => [] },
+  metas: { type: Array, default: () => [] },
   movimiento: { type: Object, default: null }
 })
 const emit = defineEmits(['guardar', 'cancelar'])
@@ -14,6 +15,7 @@ const monto = ref(props.movimiento ? String(props.movimiento.monto).replace('.',
 const fecha = ref(props.movimiento?.fecha ?? hoy)
 const descripcion = ref(props.movimiento?.descripcion ?? '')
 const categoriaId = ref(props.movimiento?.categoriaId ?? '')
+const metaId = ref('')
 const error = ref('')
 
 function enviar() {
@@ -32,7 +34,8 @@ function enviar() {
     monto: montoNormal,
     fecha: fecha.value,
     descripcion: descripcion.value.trim() || null,
-    categoriaId: categoriaId.value || null
+    categoriaId: categoriaId.value || null,
+    ...(metaId.value ? { metaId: metaId.value } : {})
   })
 }
 </script>
@@ -56,6 +59,12 @@ function enviar() {
       <select v-model="categoriaId" name="categoriaId">
         <option value="">Sin categoría</option>
         <option v-for="c in categorias" :key="c.id" :value="c.id">{{ c.nombre }}</option>
+      </select>
+    </label>
+    <label v-if="!movimiento && metas.length > 0">Meta (opcional)
+      <select v-model="metaId" name="metaId">
+        <option value="">Sin meta</option>
+        <option v-for="m in metas" :key="m.id" :value="m.id">{{ m.nombre }}</option>
       </select>
     </label>
     <label>Descripción

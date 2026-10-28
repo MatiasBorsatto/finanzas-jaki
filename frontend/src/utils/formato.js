@@ -1,10 +1,10 @@
 // Formato de dinero argentino a partir de un string decimal ("1500.50"); sin floats.
 export function formatearMonto(monto) {
-  const m = /^(\d+)(?:\.(\d{1,2}))?$/.exec(String(monto).trim())
+  const m = /^(-?)(\d+)(?:\.(\d{1,2}))?$/.exec(String(monto).trim())
   if (!m) return String(monto)
-  const enteros = m[1].replace(/\B(?=(\d{3})+(?!\d))/g, '.')
-  const decimales = (m[2] || '').padEnd(2, '0')
-  return `$ ${enteros},${decimales}`
+  const enteros = m[2].replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+  const decimales = (m[3] || '').padEnd(2, '0')
+  return `${m[1]}$ ${enteros},${decimales}`
 }
 
 // Acepta "1500", "1500.5" o "1.500,50"/"1500,5"; devuelve "1500.50" o null si es inválido.

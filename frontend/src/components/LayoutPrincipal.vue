@@ -8,7 +8,8 @@ const sesion = useSesion()
 const enlaces = [
   { to: '/movimientos', texto: 'Movimientos' },
   { to: '/presupuestos', texto: 'Presupuestos' },
-  { to: '/tarjetas', texto: 'Tarjetas' }
+  { to: '/tarjetas', texto: 'Tarjetas' },
+  { to: '/metas', texto: 'Metas' }
 ]
 
 async function salir() {

@@ -5,6 +5,7 @@ import RegistroView from '../views/RegistroView.vue'
 import MovimientosView from '../views/MovimientosView.vue'
 import PresupuestosView from '../views/PresupuestosView.vue'
 import TarjetasView from '../views/TarjetasView.vue'
+import MetasView from '../views/MetasView.vue'
 import TarjetaDetalleView from '../views/TarjetaDetalleView.vue'
 import LayoutPrincipal from '../components/LayoutPrincipal.vue'
 
@@ -20,6 +21,7 @@ export const rutas = [
       { path: 'movimientos', name: 'movimientos', component: MovimientosView, meta: { requiereAuth: true } },
       { path: 'presupuestos', name: 'presupuestos', component: PresupuestosView, meta: { requiereAuth: true } },
       { path: 'tarjetas', name: 'tarjetas', component: TarjetasView, meta: { requiereAuth: true } },
+      { path: 'metas', name: 'metas', component: MetasView, meta: { requiereAuth: true } },
       { path: 'tarjetas/:id', name: 'tarjeta-detalle', component: TarjetaDetalleView, meta: { requiereAuth: true } }
     ]
   },

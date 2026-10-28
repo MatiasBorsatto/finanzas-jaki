@@ -22,4 +22,20 @@ describe('FormularioMovimiento', () => {
     expect(datos.tipo).toBe('gasto')
     expect(datos.categoriaId).toBeNull()
   })
+
+  it('envía metaId solo si se elige una meta', async () => {
+    const metas = [{ id: '22222222-2222-2222-2222-222222222222', nombre: 'Viaje' }]
+    const wrapper = mount(FormularioMovimiento, { props: { categorias, metas } })
+    await wrapper.find('input[name="monto"]').setValue('100')
+    await wrapper.find('form').trigger('submit')
+    expect(wrapper.emitted('guardar')[0][0]).not.toHaveProperty('metaId')
+    await wrapper.find('select[name="metaId"]').setValue(metas[0].id)
+    await wrapper.find('form').trigger('submit')
+    expect(wrapper.emitted('guardar')[1][0].metaId).toBe(metas[0].id)
+  })
+
+  it('no muestra el selector de meta sin metas', () => {
+    const wrapper = mount(FormularioMovimiento, { props: { categorias } })
+    expect(wrapper.find('select[name="metaId"]').exists()).toBe(false)
+  })
 })

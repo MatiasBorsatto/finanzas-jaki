@@ -2,6 +2,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import FormularioMovimiento from '../components/FormularioMovimiento.vue'
 import TablaMovimientos from '../components/TablaMovimientos.vue'
+import { listarMetas } from '../services/metas.js'
 import {
   listarMovimientos, crearMovimiento, editarMovimiento, eliminarMovimiento, listarCategorias
 } from '../services/movimientos.js'
@@ -9,6 +10,7 @@ import {
 const LIMITE = 20
 const movimientos = ref([])
 const categorias = ref([])
+const metas = ref([])
 const total = ref(0)
 const page = ref(1)
 const cargando = ref(false)
@@ -69,6 +71,11 @@ onMounted(async () => {
   } catch (e) {
     error.value = e.mensaje || 'No se pudieron cargar las categorías.'
   }
+  try {
+    metas.value = await listarMetas()
+  } catch {
+    metas.value = []
+  }
   await cargar()
 })
 </script>
@@ -81,6 +88,7 @@ onMounted(async () => {
     <FormularioMovimiento
       :key="editando?.id ?? 'nuevo'"
       :categorias="categorias"
+      :metas="metas"
       :movimiento="editando"
       @guardar="guardar"
       @cancelar="editando = null"
