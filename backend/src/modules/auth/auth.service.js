@@ -53,4 +53,4 @@ async function refrescar(refreshToken) {
   return emitirAccessToken(usuario);
 }
 
-module.exports = { registrar, login, refrescar };
+module.exports = { registrar, login, refrescar, emitirTokens };

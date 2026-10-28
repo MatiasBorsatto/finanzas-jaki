@@ -1,5 +1,6 @@
 const { NODE_ENV } = require('../../config/env');
 const service = require('./auth.service');
+const googleService = require('./google.service');
 const { validarRegistro, validarLogin } = require('./auth.validation');
 const { ErrorNoAutenticado } = require('../../utils/errores');
 
@@ -26,6 +27,13 @@ async function login(req, res) {
   res.json({ mensaje: 'Sesión iniciada' });
 }
 
+async function google(req, res) {
+  const { accessToken, refreshToken } = await googleService.loginConGoogle(req.body?.idToken);
+  setAccess(res, accessToken);
+  res.cookie('refreshToken', refreshToken, opcionesCookie(30 * DIA));
+  res.json({ mensaje: 'Sesión iniciada' });
+}
+
 async function refresh(req, res) {
   const token = req.cookies?.refreshToken;
   if (!token) throw new ErrorNoAutenticado('Sesión inválida');
@@ -40,4 +48,4 @@ function logout(req, res) {
   res.status(204).end();
 }
 
-module.exports = { registro, login, refresh, logout };
+module.exports = { registro, login, google, refresh, logout };
