@@ -4,6 +4,8 @@ import LoginView from '../views/LoginView.vue'
 import RegistroView from '../views/RegistroView.vue'
 import MovimientosView from '../views/MovimientosView.vue'
 import PresupuestosView from '../views/PresupuestosView.vue'
+import TarjetasView from '../views/TarjetasView.vue'
+import TarjetaDetalleView from '../views/TarjetaDetalleView.vue'
 import LayoutPrincipal from '../components/LayoutPrincipal.vue'
 
 export const rutas = [
@@ -16,7 +18,9 @@ export const rutas = [
     children: [
       { path: '', redirect: '/movimientos' },
       { path: 'movimientos', name: 'movimientos', component: MovimientosView, meta: { requiereAuth: true } },
-      { path: 'presupuestos', name: 'presupuestos', component: PresupuestosView, meta: { requiereAuth: true } }
+      { path: 'presupuestos', name: 'presupuestos', component: PresupuestosView, meta: { requiereAuth: true } },
+      { path: 'tarjetas', name: 'tarjetas', component: TarjetasView, meta: { requiereAuth: true } },
+      { path: 'tarjetas/:id', name: 'tarjeta-detalle', component: TarjetaDetalleView, meta: { requiereAuth: true } }
     ]
   },
   { path: '/:pathMatch(.*)*', redirect: '/' }

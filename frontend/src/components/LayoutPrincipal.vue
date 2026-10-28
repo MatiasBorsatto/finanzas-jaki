@@ -7,7 +7,8 @@ const router = useRouter()
 const sesion = useSesion()
 const enlaces = [
   { to: '/movimientos', texto: 'Movimientos' },
-  { to: '/presupuestos', texto: 'Presupuestos' }
+  { to: '/presupuestos', texto: 'Presupuestos' },
+  { to: '/tarjetas', texto: 'Tarjetas' }
 ]
 
 async function salir() {
