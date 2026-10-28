@@ -4,6 +4,7 @@ const { grupoAccesible } = require('../../middlewares/grupoAccesible');
 const { validarUuid } = require('../movimientos/movimientos.validation');
 const { ErrorValidacion } = require('../../utils/errores');
 const service = require('./grupos.service');
+const invitaciones = require('./invitaciones.service');
 
 const router = Router();
 router.use(autenticar);
@@ -51,6 +52,16 @@ router.patch('/:id/miembros/:usuarioId', grupoAccesible('admin'), async (req, re
   const rol = req.body?.rol;
   if (rol !== 'admin' && rol !== 'miembro') throw new ErrorValidacion("rol debe ser 'admin' o 'miembro'");
   res.json(await service.cambiarRol(req.grupoId, usuarioId, rol));
+});
+
+router.post('/:id/invitaciones', grupoAccesible('admin'), async (req, res) => {
+  res.status(201).json(await invitaciones.invitar(req.usuario.id, req.grupoId, req.body?.email));
+});
+
+router.delete('/:id/invitaciones/:invitacionId', grupoAccesible('admin'), async (req, res) => {
+  const invitacionId = validarUuid(req.params.invitacionId, 'invitacionId');
+  await invitaciones.cancelarInvitacion(req.usuario.id, invitacionId, req.grupoId);
+  res.status(204).end();
 });
 
 router.post('/:id/salir', grupoAccesible(), async (req, res) => {

@@ -9,6 +9,7 @@ const Meta = require('./meta');
 const AporteMeta = require('./aporte-meta');
 const Grupo = require('./grupo');
 const MiembroGrupo = require('./miembro-grupo');
+const Invitacion = require('./invitacion');
 
 Usuario.hasMany(Categoria, { foreignKey: 'usuarioId' });
 Categoria.belongsTo(Usuario, { foreignKey: 'usuarioId' });
@@ -63,4 +64,5 @@ module.exports = {
   AporteMeta,
   Grupo,
   MiembroGrupo,
+  Invitacion,
 };
