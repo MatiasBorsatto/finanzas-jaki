@@ -13,6 +13,9 @@ function obtenerTransporte() {
       host: SMTP_HOST,
       port,
       secure: port === 465,
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 10000,
       auth: SMTP_USER ? { user: SMTP_USER, pass: SMTP_PASS } : undefined,
     });
   }

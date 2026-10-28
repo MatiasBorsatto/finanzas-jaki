@@ -9,14 +9,18 @@ async function registrarAlertaPresupuesto(usuarioId, presupuestoId, alerta, mens
     defaults: { usuarioId, mensaje },
   });
   if (!creada) return notificacion;
+  // Sin contenido del mensaje, ni el email, ni secretos en los logs.
+  const registrarFallo = (err) =>
+    console.error('No se pudo enviar el aviso por email de la alerta de presupuesto:', err && err.name);
   try {
     const usuario = await Usuario.findByPk(usuarioId);
     if (usuario && usuario.preferenciasEmail) {
-      await email.enviarEmail({ para: usuario.email, asunto: 'Alerta de presupuesto', texto: mensaje });
+      // Sin await: la respuesta HTTP no espera al SMTP.
+      Promise.resolve(email.enviarEmail({ para: usuario.email, asunto: 'Alerta de presupuesto', texto: mensaje }))
+        .catch(registrarFallo);
     }
   } catch (err) {
-    // Sin contenido del mensaje, ni el email, ni secretos.
-    console.error('No se pudo enviar el aviso por email de la alerta de presupuesto:', err.name);
+    registrarFallo(err);
   }
   return notificacion;
 }

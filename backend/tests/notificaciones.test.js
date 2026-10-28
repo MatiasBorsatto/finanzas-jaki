@@ -96,3 +96,13 @@ test('GET lista solo las propias y PATCH marca como leída', async () => {
 test('requiere autenticación', async () => {
   expect((await request(app).get('/api/notificaciones')).status).toBe(401);
 });
+
+test('un envío de email colgado no demora la respuesta de /estado', async () => {
+  await userA.update({ preferenciasEmail: true });
+  spy.mockImplementation(() => new Promise(() => {}));
+  await agentA.post('/api/movimientos').send({ tipo: 'gasto', monto: '95.00', fecha: '2026-07-06', categoriaId: catA });
+  const res = await agentA.get('/api/presupuestos/estado?mes=2026-07');
+  expect(res.status).toBe(200);
+  expect(await Notificacion.count({ where: { presupuestoId: presA } })).toBe(1);
+  expect(spy).toHaveBeenCalledTimes(1);
+}, 3000);
