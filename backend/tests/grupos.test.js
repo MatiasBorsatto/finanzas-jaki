@@ -124,6 +124,31 @@ describe('grupos', () => {
     expect((await agentA.delete(`/api/grupos/${g.id}/miembros/${usuarioB.id}`)).status).toBe(404);
   });
 
+  test('id de grupo malformado responde 404', async () => {
+    expect((await agentA.get('/api/grupos/no-es-uuid')).status).toBe(404);
+  });
+
+  test('cambiar rol: promover, 403 de miembro, 404 de no miembro, 409 al degradar al último admin', async () => {
+    const g = await crear(agentA, 'Roles');
+    await agentB.post('/api/grupos/unirse').send({ codigo: g.codigo });
+    const uA = await Usuario.findOne({ where: { email: correos[0] } });
+    const uB = await Usuario.findOne({ where: { email: correos[1] } });
+    const uC = await Usuario.findOne({ where: { email: correos[2] } });
+    const url = (u) => `/api/grupos/${g.id}/miembros/${u.id}`;
+
+    expect((await agentB.patch(url(uB)).send({ rol: 'admin' })).status).toBe(403);
+    expect((await agentA.patch(url(uC)).send({ rol: 'admin' })).status).toBe(404);
+    expect((await agentA.patch(url(uB)).send({ rol: 'dios' })).status).toBe(400);
+    expect((await agentA.patch(url(uA)).send({ rol: 'miembro' })).status).toBe(409);
+
+    const res = await agentA.patch(url(uB)).send({ rol: 'admin' });
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ id: expect.any(String), usuarioId: uB.id, rol: 'admin' });
+
+    // con dos admins el primero ya puede salir
+    expect((await agentA.post(`/api/grupos/${g.id}/salir`)).status).toBe(204);
+  });
+
   test('no miembro no puede regenerar ni salir (404)', async () => {
     const g = await crear(agentA, 'Ajeno');
     expect((await agentB.post(`/api/grupos/${g.id}/codigo/regenerar`)).status).toBe(404);

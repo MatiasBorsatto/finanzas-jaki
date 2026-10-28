@@ -46,6 +46,13 @@ router.delete('/:id/miembros/:usuarioId', grupoAccesible('admin'), async (req, r
   res.status(204).end();
 });
 
+router.patch('/:id/miembros/:usuarioId', grupoAccesible('admin'), async (req, res) => {
+  const usuarioId = validarUuid(req.params.usuarioId, 'usuarioId');
+  const rol = req.body?.rol;
+  if (rol !== 'admin' && rol !== 'miembro') throw new ErrorValidacion("rol debe ser 'admin' o 'miembro'");
+  res.json(await service.cambiarRol(req.grupoId, usuarioId, rol));
+});
+
 router.post('/:id/salir', grupoAccesible(), async (req, res) => {
   await service.salirDeGrupo(req.usuario.id, req.grupoId);
   res.status(204).end();

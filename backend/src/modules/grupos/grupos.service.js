@@ -95,6 +95,17 @@ async function quitarMiembro(adminId, grupoId, usuarioId) {
   await miembro.destroy();
 }
 
+async function cambiarRol(grupoId, usuarioId, rol) {
+  const miembro = await MiembroGrupo.findOne({ where: { grupoId, usuarioId } });
+  if (!miembro) throw new ErrorNoEncontrado('El usuario no es miembro del grupo');
+  if (rol === 'miembro' && (await esUltimoAdmin(grupoId, miembro))) {
+    throw new ErrorConflicto('No se puede degradar al último administrador');
+  }
+  miembro.rol = rol;
+  await miembro.save();
+  return { id: miembro.id, usuarioId: miembro.usuarioId, rol: miembro.rol };
+}
+
 async function salirDeGrupo(usuarioId, grupoId) {
   const miembro = await MiembroGrupo.findOne({ where: { grupoId, usuarioId } });
   if (!miembro) throw new ErrorNoEncontrado('Grupo no encontrado');
@@ -111,5 +122,6 @@ module.exports = {
   unirseConCodigo,
   regenerarCodigo,
   quitarMiembro,
+  cambiarRol,
   salirDeGrupo,
 };
