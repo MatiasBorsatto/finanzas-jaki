@@ -5,7 +5,8 @@ import { listarCategorias } from '../services/movimientos.js'
 import { estadoPresupuestos, guardarPresupuesto, eliminarPresupuesto } from '../services/presupuestos.js'
 import { normalizarMonto } from '../utils/formato.js'
 
-const mes = ref(new Date().toISOString().slice(0, 7))
+const ahora = new Date()
+const mes = ref(`${ahora.getFullYear()}-${String(ahora.getMonth() + 1).padStart(2, '0')}`)
 const estados = ref([])
 const categorias = ref([])
 const categoriaId = ref('')
@@ -97,7 +98,7 @@ onMounted(async () => {
           <h2>{{ nombreCategoria(p.categoriaId) }}</h2>
           <button type="button" @click="eliminar(p)">Eliminar</button>
         </div>
-        <BarraPresupuesto :monto-limite="p.montoLimite" :consumido="p.consumido" :alerta="p.alerta" />
+        <BarraPresupuesto :monto-limite="p.montoLimite" :consumido="p.consumido" :restante="p.restante" :porcentaje="p.porcentaje" :alerta="p.alerta" />
       </li>
     </ul>
   </section>

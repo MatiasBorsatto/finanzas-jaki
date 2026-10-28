@@ -6,8 +6,6 @@ import MovimientosView from '../views/MovimientosView.vue'
 import PresupuestosView from '../views/PresupuestosView.vue'
 import LayoutPrincipal from '../components/LayoutPrincipal.vue'
 
-
-
 export const rutas = [
   { path: '/login', name: 'login', component: LoginView },
   { path: '/registro', name: 'registro', component: RegistroView },

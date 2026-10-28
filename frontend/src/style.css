@@ -8,6 +8,7 @@
   --primario-texto: #ffffff;
   --error: #b3261e;
   --error-fondo: #fdecea;
+  --advertencia: #8a5300;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -21,6 +22,7 @@
     --primario-texto: #0d1a14;
     --error: #f2b8b5;
     --error-fondo: #3a1f1d;
+    --advertencia: #e0a030;
   }
 }
 
