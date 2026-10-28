@@ -57,4 +57,11 @@ async function listarMovimientos(usuarioId, { mes, categoriaId, tipo, page = 1, 
   return { items: rows, total: count };
 }
 
-module.exports = { crearMovimiento, editarMovimiento, eliminarMovimiento, listarMovimientos };
+module.exports = {
+  crearMovimiento,
+  editarMovimiento,
+  eliminarMovimiento,
+  listarMovimientos,
+  rangoDelMes,
+  verificarCategoria,
+};

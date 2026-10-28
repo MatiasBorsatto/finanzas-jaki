@@ -44,4 +44,4 @@ function dividirEnPartes(total, cantidad) {
   return Array.from({ length: cantidad }, (_, i) => deCentavos(base + (i < sobrante ? 1n : 0n)));
 }
 
-module.exports = { validarMonto, sumar, dividirEnPartes };
+module.exports = { validarMonto, sumar, dividirEnPartes, aCentavos, deCentavos };

@@ -35,6 +35,13 @@ function validarUuid(valor, nombre) {
   return valor;
 }
 
+function validarMes(mes) {
+  if (typeof mes !== 'string' || !/^\d{4}-(0[1-9]|1[0-2])$/.test(mes)) {
+    throw new ErrorValidacion('El mes debe tener formato YYYY-MM');
+  }
+  return mes;
+}
+
 function validarCrear(body = {}) {
   return {
     tipo: validarTipo(body.tipo),
@@ -66,12 +73,7 @@ function entero(valor, nombre) {
 
 function validarFiltros(query = {}) {
   const filtros = {};
-  if (query.mes !== undefined) {
-    if (typeof query.mes !== 'string' || !/^\d{4}-(0[1-9]|1[0-2])$/.test(query.mes)) {
-      throw new ErrorValidacion('El mes debe tener formato YYYY-MM');
-    }
-    filtros.mes = query.mes;
-  }
+  if (query.mes !== undefined) filtros.mes = validarMes(query.mes);
   if (query.tipo !== undefined) filtros.tipo = validarTipo(query.tipo);
   if (query.categoriaId !== undefined) filtros.categoriaId = validarUuid(query.categoriaId, 'categoriaId');
   filtros.page = query.page === undefined ? 1 : entero(query.page, 'page');
@@ -80,4 +82,4 @@ function validarFiltros(query = {}) {
   return filtros;
 }
 
-module.exports = { validarCrear, validarEditar, validarFiltros };
+module.exports = { validarCrear, validarEditar, validarFiltros, validarMes, validarUuid };
