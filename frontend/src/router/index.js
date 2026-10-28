@@ -3,10 +3,10 @@ import { useSesion } from '../stores/sesion.js'
 import LoginView from '../views/LoginView.vue'
 import RegistroView from '../views/RegistroView.vue'
 import MovimientosView from '../views/MovimientosView.vue'
+import PresupuestosView from '../views/PresupuestosView.vue'
 import LayoutPrincipal from '../components/LayoutPrincipal.vue'
 
-// Marcadores hasta que existan las vistas reales (tareas siguientes).
-const Pendiente = (titulo) => ({ render: () => titulo })
+
 
 export const rutas = [
   { path: '/login', name: 'login', component: LoginView },
@@ -18,7 +18,7 @@ export const rutas = [
     children: [
       { path: '', redirect: '/movimientos' },
       { path: 'movimientos', name: 'movimientos', component: MovimientosView, meta: { requiereAuth: true } },
-      { path: 'presupuestos', name: 'presupuestos', component: Pendiente('Presupuestos'), meta: { requiereAuth: true } }
+      { path: 'presupuestos', name: 'presupuestos', component: PresupuestosView, meta: { requiereAuth: true } }
     ]
   },
   { path: '/:pathMatch(.*)*', redirect: '/' }

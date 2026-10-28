@@ -26,5 +26,6 @@ export const http = {
   get: (url) => pedir('GET', url),
   post: (url, cuerpo) => pedir('POST', url, cuerpo ?? {}),
   patch: (url, cuerpo) => pedir('PATCH', url, cuerpo),
+  put: (url, cuerpo) => pedir('PUT', url, cuerpo),
   delete: (url) => pedir('DELETE', url)
 }
