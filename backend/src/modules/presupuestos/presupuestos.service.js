@@ -1,13 +1,38 @@
 const { Op } = require('sequelize');
-const { Presupuesto, Movimiento, Categoria } = require('../../db/models');
+const { Presupuesto, Movimiento, Categoria, ParticipacionGasto } = require('../../db/models');
 const { ErrorNoEncontrado, ErrorValidacion } = require('../../utils/errores');
 const { sumar } = require('../../utils/dinero');
 const { rangoDelMes, verificarCategoria } = require('../movimientos/movimientos.service');
 const { calcularEstado } = require('./presupuestos.calculo');
 const { registrarAlertaPresupuesto } = require('../notificaciones/notificaciones.service');
 
-// En esta fase solo se admite solo_personal; con_compartidos se habilita más adelante.
-const REGLAS_PERMITIDAS = ['solo_personal'];
+const REGLAS_PERMITIDAS = ['solo_personal', 'con_compartidos'];
+
+// Gastos personales de la categoría y mes; con_compartidos suma además la parte
+// (ParticipacionGasto) del usuario en gastos compartidos de todos sus grupos.
+// Se suman solo las participaciones, nunca el monto del movimiento, para no contar dos veces.
+async function consumoPresupuesto(usuarioId, categoriaId, mes, regla) {
+  const fecha = { [Op.between]: rangoDelMes(mes) };
+  const personales = await Movimiento.findAll({
+    where: { usuarioId, tipo: 'gasto', alcance: 'personal', fecha, categoriaId },
+    attributes: ['monto'],
+  });
+  const montos = personales.map((g) => g.monto);
+  if (regla === 'con_compartidos') {
+    const partes = await ParticipacionGasto.findAll({
+      where: { usuarioId },
+      attributes: ['monto'],
+      include: [{
+        model: Movimiento,
+        required: true,
+        attributes: [],
+        where: { tipo: 'gasto', alcance: 'compartido', fecha, categoriaId },
+      }],
+    });
+    montos.push(...partes.map((p) => p.monto));
+  }
+  return sumar(montos);
+}
 
 async function upsertPresupuesto(usuarioId, { categoriaId, mes, montoLimite, regla = 'solo_personal' }) {
   if (!REGLAS_PERMITIDAS.includes(regla)) throw new ErrorValidacion('Regla de presupuesto no permitida');
@@ -34,18 +59,8 @@ async function eliminarPresupuesto(usuarioId, id) {
 async function estadoPresupuestos(usuarioId, mes) {
   const presupuestos = await listarPresupuestos(usuarioId, mes);
   if (presupuestos.length === 0) return [];
-  const gastos = await Movimiento.findAll({
-    where: {
-      usuarioId,
-      tipo: 'gasto',
-      alcance: 'personal',
-      fecha: { [Op.between]: rangoDelMes(mes) },
-      categoriaId: presupuestos.map((p) => p.categoriaId),
-    },
-    attributes: ['categoriaId', 'monto'],
-  });
-  const estados = presupuestos.map((p) => {
-    const consumido = sumar(gastos.filter((g) => g.categoriaId === p.categoriaId).map((g) => g.monto));
+  const estados = await Promise.all(presupuestos.map(async (p) => {
+    const consumido = await consumoPresupuesto(usuarioId, p.categoriaId, p.mes, p.regla);
     return {
       id: p.id,
       categoriaId: p.categoriaId,
@@ -55,7 +70,7 @@ async function estadoPresupuestos(usuarioId, mes) {
       consumido,
       ...calcularEstado({ montoLimite: p.montoLimite, consumido }),
     };
-  });
+  }));
   await registrarAlertas(usuarioId, estados);
   return estados;
 }
@@ -78,4 +93,4 @@ async function registrarAlertas(usuarioId, estados) {
   }
 }
 
-module.exports = { upsertPresupuesto, listarPresupuestos, eliminarPresupuesto, estadoPresupuestos };
+module.exports = { consumoPresupuesto, upsertPresupuesto, listarPresupuestos, eliminarPresupuesto, estadoPresupuestos };

@@ -1,11 +1,25 @@
-const { fn, col } = require('sequelize');
+const { fn, col, Op } = require('sequelize');
 const { sequelize } = require('../../db/sequelize');
-const { Meta, AporteMeta } = require('../../db/models');
+const { Meta, AporteMeta, MiembroGrupo } = require('../../db/models');
 const { ErrorNoEncontrado, ErrorValidacion } = require('../../utils/errores');
 const { progresoMeta } = require('./metas.calculo');
 
 async function obtenerPropia(usuarioId, id, opciones = {}) {
   const meta = await Meta.findOne({ where: { id, usuarioId }, ...opciones });
+  if (!meta) throw new ErrorNoEncontrado('Meta no encontrada');
+  return meta;
+}
+
+async function gruposDe(usuarioId) {
+  const miembros = await MiembroGrupo.findAll({ where: { usuarioId }, attributes: ['grupoId'] });
+  return miembros.map((m) => m.grupoId);
+}
+
+// Metas propias o de un grupo del que el usuario es miembro (progreso compartido).
+async function obtenerAccesible(usuarioId, id) {
+  const meta = await Meta.findOne({
+    where: { id, [Op.or]: [{ usuarioId }, { grupoId: await gruposDe(usuarioId) }] },
+  });
   if (!meta) throw new ErrorNoEncontrado('Meta no encontrada');
   return meta;
 }
@@ -34,13 +48,19 @@ async function vistaDe(meta) {
   return conProgreso(meta, acumulados.get(meta.id));
 }
 
-async function crearMeta(usuarioId, { nombre, montoObjetivo, fechaLimite = null }) {
-  const meta = await Meta.create({ usuarioId, grupoId: null, nombre, montoObjetivo, fechaLimite });
+async function crearMeta(usuarioId, { nombre, montoObjetivo, fechaLimite = null, grupoId = null }) {
+  if (grupoId && !(await MiembroGrupo.findOne({ where: { grupoId, usuarioId } }))) {
+    throw new ErrorNoEncontrado('Grupo no encontrado');
+  }
+  const meta = await Meta.create({ usuarioId, grupoId, nombre, montoObjetivo, fechaLimite });
   return vistaDe(meta);
 }
 
 async function listarMetas(usuarioId) {
-  const metas = await Meta.findAll({ where: { usuarioId }, order: [['createdAt', 'DESC'], ['id', 'ASC']] });
+  const metas = await Meta.findAll({
+    where: { [Op.or]: [{ usuarioId }, { grupoId: await gruposDe(usuarioId) }] },
+    order: [['createdAt', 'DESC'], ['id', 'ASC']],
+  });
   const acumulados = await acumuladosPorMeta(metas.map((m) => m.id));
   return metas.map((m) => conProgreso(m, acumulados.get(m.id)));
 }
@@ -62,7 +82,7 @@ async function eliminarMeta(usuarioId, id) {
 
 // monto positivo = aporte; negativo = retiro.
 async function registrarAporte(usuarioId, metaId, { monto, fecha }) {
-  const meta = await obtenerPropia(usuarioId, metaId);
+  const meta = await obtenerAccesible(usuarioId, metaId);
   const aporte = await AporteMeta.create({ metaId: meta.id, monto, fecha });
   return { aporte, meta: await vistaDe(meta) };
 }

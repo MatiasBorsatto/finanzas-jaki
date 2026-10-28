@@ -87,8 +87,8 @@ test('PUT crea y luego actualiza el mismo presupuesto (upsert)', async () => {
   expect(lista.body.filter((p) => p.categoriaId === catComida)).toHaveLength(1);
 });
 
-test('con_compartidos responde 400 en esta fase', async () => {
-  const res = await poner(agentA, { categoriaId: catOcio, mes: '2026-10', montoLimite: '10', regla: 'con_compartidos' });
+test('una regla desconocida responde 400', async () => {
+  const res = await poner(agentA, { categoriaId: catOcio, mes: '2026-10', montoLimite: '10', regla: 'otra' });
   expect(res.status).toBe(400);
 });
 

@@ -1,6 +1,6 @@
 const { validarMonto } = require('../../utils/dinero');
 const { ErrorValidacion } = require('../../utils/errores');
-const { validarFecha } = require('../movimientos/movimientos.validation');
+const { validarFecha, validarUuid } = require('../movimientos/movimientos.validation');
 
 function validarNombre(nombre) {
   if (typeof nombre !== 'string' || !nombre.trim()) throw new ErrorValidacion('El nombre es obligatorio');
@@ -13,16 +13,16 @@ function validarFechaLimite(fecha) {
   return fecha === null ? null : validarFecha(fecha);
 }
 
-// Las metas grupales se habilitan con la tarea de grupos.
+// El grupo de una meta no se cambia después de crearla.
 function rechazarGrupo(body) {
   if (body.grupoId !== undefined && body.grupoId !== null) {
-    throw new ErrorValidacion('Las metas grupales todavía no están disponibles');
+    throw new ErrorValidacion('El grupo de una meta no se puede cambiar');
   }
 }
 
 function validarCrear(body = {}) {
-  rechazarGrupo(body);
   return {
+    grupoId: body.grupoId === undefined || body.grupoId === null ? null : validarUuid(body.grupoId, 'grupoId'),
     nombre: validarNombre(body.nombre),
     montoObjetivo: validarMonto(body.montoObjetivo),
     fechaLimite: body.fechaLimite === undefined ? null : validarFechaLimite(body.fechaLimite),

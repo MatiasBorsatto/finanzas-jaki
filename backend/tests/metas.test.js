@@ -81,9 +81,9 @@ describe('metas', () => {
     });
   });
 
-  test('rechaza grupoId hasta que existan metas grupales', async () => {
+  test('responde 404 si el grupoId no existe o no es del usuario', async () => {
     const res = await crearMeta(agentA, { grupoId: '11111111-1111-4111-8111-111111111111' });
-    expect(res.status).toBe(400);
+    expect(res.status).toBe(404);
   });
 
   test('rechaza datos inválidos', async () => {
