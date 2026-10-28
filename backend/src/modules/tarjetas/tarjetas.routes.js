@@ -2,9 +2,10 @@ const { Router } = require('express');
 const { autenticar } = require('../../middlewares/autenticar');
 const { validarMonto } = require('../../utils/dinero');
 const { ErrorValidacion } = require('../../utils/errores');
-const { validarUuid, validarFecha, validarDescripcion } = require('../movimientos/movimientos.validation');
+const { validarUuid, validarFecha, validarDescripcion, validarMes } = require('../movimientos/movimientos.validation');
 const service = require('./tarjetas.service');
 const { crearCompra } = require('./compras.service');
+const { resumenTarjeta, registrarPagoResumen } = require('./resumen.service');
 
 const router = Router();
 router.use(autenticar);
@@ -76,6 +77,18 @@ router.post('/:id/compras', async (req, res) => {
     datos
   );
   res.status(201).json({ compra, movimientos });
+});
+
+router.get('/:id/resumen', async (req, res) => {
+  const mes = validarMes(req.query.mes);
+  res.json(await resumenTarjeta(req.usuario.id, validarUuid(req.params.id, 'id'), mes));
+});
+
+router.post('/:id/pagos', async (req, res) => {
+  const b = req.body || {};
+  const datos = { monto: validarMonto(b.monto), fecha: validarFecha(b.fecha) };
+  const mov = await registrarPagoResumen(req.usuario.id, validarUuid(req.params.id, 'id'), datos);
+  res.status(201).json(mov);
 });
 
 module.exports = router;
