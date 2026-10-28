@@ -3,6 +3,7 @@ const cookieParser = require('cookie-parser');
 const authRoutes = require('./modules/auth/auth.routes');
 const usuarioRoutes = require('./modules/usuario/usuario.routes');
 const categoriasRoutes = require('./modules/categorias/categorias.routes');
+const movimientosRoutes = require('./modules/movimientos/movimientos.routes');
 const { manejarErrores } = require('./middlewares/manejarErrores');
 
 function createApp() {
@@ -17,6 +18,7 @@ function createApp() {
   app.use('/api/auth', authRoutes);
   app.use('/api/usuario', usuarioRoutes);
   app.use('/api/categorias', categoriasRoutes);
+  app.use('/api/movimientos', movimientosRoutes);
   app.use(manejarErrores);
 
   return app;
