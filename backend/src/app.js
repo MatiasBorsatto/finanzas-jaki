@@ -7,6 +7,7 @@ const movimientosRoutes = require('./modules/movimientos/movimientos.routes');
 const presupuestosRoutes = require('./modules/presupuestos/presupuestos.routes');
 const notificacionesRoutes = require('./modules/notificaciones/notificaciones.routes');
 const tarjetasRoutes = require('./modules/tarjetas/tarjetas.routes');
+const metasRoutes = require('./modules/metas/metas.routes');
 const { manejarErrores } = require('./middlewares/manejarErrores');
 
 function createApp() {
@@ -25,6 +26,7 @@ function createApp() {
   app.use('/api/presupuestos', presupuestosRoutes);
   app.use('/api/notificaciones', notificacionesRoutes);
   app.use('/api/tarjetas', tarjetasRoutes);
+  app.use('/api/metas', metasRoutes);
   app.use(manejarErrores);
 
   return app;

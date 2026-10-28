@@ -1,5 +1,7 @@
 const { Op } = require('sequelize');
+const { sequelize } = require('../../db/sequelize');
 const { Movimiento, Categoria } = require('../../db/models');
+const metasService = require('../metas/metas.service');
 const { ErrorNoEncontrado, ErrorValidacion } = require('../../utils/errores');
 const { diaValido } = require('../../utils/fechas');
 
@@ -20,7 +22,15 @@ async function obtenerPropio(usuarioId, id) {
 
 async function crearMovimiento(usuarioId, datos) {
   await verificarCategoria(usuarioId, datos.categoriaId);
-  return Movimiento.create({ ...datos, usuarioId, alcance: 'personal' });
+  if (!datos.metaId) return Movimiento.create({ ...datos, usuarioId, alcance: 'personal' });
+
+  // Con metaId, el aporte a la meta se crea en la misma transacción que el movimiento.
+  await metasService.obtenerPropia(usuarioId, datos.metaId);
+  return sequelize.transaction(async (transaction) => {
+    const mov = await Movimiento.create({ ...datos, usuarioId, alcance: 'personal' }, { transaction });
+    await metasService.registrarAporteDeMovimiento(usuarioId, mov, transaction);
+    return mov;
+  });
 }
 
 async function editarMovimiento(usuarioId, id, datos) {

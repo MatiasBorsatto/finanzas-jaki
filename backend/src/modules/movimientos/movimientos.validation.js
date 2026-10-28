@@ -49,6 +49,7 @@ function validarCrear(body = {}) {
     fecha: validarFecha(body.fecha),
     descripcion: validarDescripcion(body.descripcion),
     categoriaId: body.categoriaId ? validarUuid(body.categoriaId, 'categoriaId') : null,
+    metaId: body.metaId ? validarUuid(body.metaId, 'metaId') : null,
   };
 }
 
