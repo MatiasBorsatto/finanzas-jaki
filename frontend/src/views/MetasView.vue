@@ -115,7 +115,7 @@ onMounted(cargar)
           <button type="button" @click="eliminar(m)">Eliminar</button>
         </div>
         <p v-if="m.fechaLimite" class="limite">Fecha límite: {{ m.fechaLimite.split('-').reverse().join('/') }}</p>
-        <BarraMeta :monto-objetivo="m.montoObjetivo" :acumulado="m.acumulado" />
+        <BarraMeta :monto-objetivo="m.montoObjetivo" :acumulado="m.acumulado" :porcentaje="m.porcentaje" :restante="m.restante" />
         <form class="form-grid aporte" novalidate @submit.prevent="aportar(m)">
           <label>Operación
             <select v-model="formAporte(m.id).tipo">
