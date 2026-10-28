@@ -1,0 +1,54 @@
+const { Router } = require('express');
+const { autenticar } = require('../../middlewares/autenticar');
+const { grupoAccesible } = require('../../middlewares/grupoAccesible');
+const { validarUuid } = require('../movimientos/movimientos.validation');
+const { ErrorValidacion } = require('../../utils/errores');
+const service = require('./grupos.service');
+
+const router = Router();
+router.use(autenticar);
+
+function validarNombre(body) {
+  const nombre = typeof body?.nombre === 'string' ? body.nombre.trim() : '';
+  if (!nombre || nombre.length > 100) throw new ErrorValidacion('nombre es obligatorio (máx. 100 caracteres)');
+  return nombre;
+}
+
+function validarCodigo(body) {
+  const codigo = typeof body?.codigo === 'string' ? body.codigo.trim().toUpperCase() : '';
+  if (!codigo || codigo.length > 16) throw new ErrorValidacion('Código inválido o vencido');
+  return codigo;
+}
+
+router.post('/', async (req, res) => {
+  res.status(201).json(await service.crearGrupo(req.usuario.id, validarNombre(req.body)));
+});
+
+router.get('/', async (req, res) => {
+  res.json(await service.listarGruposDeUsuario(req.usuario.id));
+});
+
+router.post('/unirse', async (req, res) => {
+  res.json(await service.unirseConCodigo(req.usuario.id, validarCodigo(req.body)));
+});
+
+router.get('/:id', grupoAccesible(), async (req, res) => {
+  res.json(await service.obtenerGrupo(req.grupoId, req.miembro.rol));
+});
+
+router.post('/:id/codigo/regenerar', grupoAccesible('admin'), async (req, res) => {
+  res.json(await service.regenerarCodigo(req.usuario.id, req.grupoId));
+});
+
+router.delete('/:id/miembros/:usuarioId', grupoAccesible('admin'), async (req, res) => {
+  const usuarioId = validarUuid(req.params.usuarioId, 'usuarioId');
+  await service.quitarMiembro(req.usuario.id, req.grupoId, usuarioId);
+  res.status(204).end();
+});
+
+router.post('/:id/salir', grupoAccesible(), async (req, res) => {
+  await service.salirDeGrupo(req.usuario.id, req.grupoId);
+  res.status(204).end();
+});
+
+module.exports = router;

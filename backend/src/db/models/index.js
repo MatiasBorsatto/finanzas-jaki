@@ -7,6 +7,8 @@ const Tarjeta = require('./tarjeta');
 const Compra = require('./compra');
 const Meta = require('./meta');
 const AporteMeta = require('./aporte-meta');
+const Grupo = require('./grupo');
+const MiembroGrupo = require('./miembro-grupo');
 
 Usuario.hasMany(Categoria, { foreignKey: 'usuarioId' });
 Categoria.belongsTo(Usuario, { foreignKey: 'usuarioId' });
@@ -44,6 +46,11 @@ Movimiento.belongsTo(Meta, { foreignKey: 'metaId' });
 Movimiento.hasMany(AporteMeta, { foreignKey: 'movimientoId' });
 AporteMeta.belongsTo(Movimiento, { foreignKey: 'movimientoId' });
 
+Grupo.hasMany(MiembroGrupo, { foreignKey: 'grupoId' });
+MiembroGrupo.belongsTo(Grupo, { foreignKey: 'grupoId' });
+Usuario.hasMany(MiembroGrupo, { foreignKey: 'usuarioId' });
+MiembroGrupo.belongsTo(Usuario, { foreignKey: 'usuarioId' });
+
 module.exports = {
   Usuario,
   Categoria,
@@ -54,4 +61,6 @@ module.exports = {
   Compra,
   Meta,
   AporteMeta,
+  Grupo,
+  MiembroGrupo,
 };
