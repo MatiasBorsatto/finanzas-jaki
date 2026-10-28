@@ -72,11 +72,17 @@ async function solicitarRecuperacion(correo) {
     venceEn: new Date(Date.now() + VIGENCIA_TOKEN_MS),
   });
   const base = process.env.FRONTEND_URL || '';
-  await email.enviarEmail({
-    para: u.email,
-    asunto: 'Recuperar contraseña - Finanzas Jaki',
-    texto: `Para restablecer tu contraseña ingresá a: ${base}/restablecer?token=${token}\nEl enlace vence en una hora y solo puede usarse una vez.`,
-  });
+  // No se espera el envío: un fallo no debe cambiar la respuesta (evita revelar qué cuentas existen).
+  // El log omite el mensaje del error porque puede incluir el email o el token.
+  Promise.resolve()
+    .then(() =>
+      email.enviarEmail({
+        para: u.email,
+        asunto: 'Recuperar contraseña - Finanzas Jaki',
+        texto: `Para restablecer tu contraseña ingresá a: ${base}/restablecer?token=${token}\nEl enlace vence en una hora y solo puede usarse una vez.`,
+      })
+    )
+    .catch((err) => console.error('Falló el envío del email de recuperación', err?.code || err?.name));
 }
 
 async function restablecerPassword(token, nuevaPassword) {

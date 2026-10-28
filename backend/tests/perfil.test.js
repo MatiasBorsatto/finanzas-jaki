@@ -123,3 +123,15 @@ test('PATCH perfil cambia la contraseña solo con la actual correcta', async () 
   const u = await Usuario.findOne({ where: { email: correo } });
   expect(await bcrypt.compare('clave-nueva-44', u.passwordHash)).toBe(true);
 });
+
+test('recuperar responde 200 idéntico aunque falle el envío del email', async () => {
+  const logs = jest.spyOn(console, 'error').mockImplementation(() => {});
+  espia.mockRejectedValue(new Error(`SMTP caído para ${correo}`));
+  const existente = await request(app).post('/api/auth/recuperar').send({ email: correo });
+  const inexistente = await request(app).post('/api/auth/recuperar').send({ email: 'nadie-jamas@example.com' });
+  expect(existente.status).toBe(200);
+  expect(existente.status).toBe(inexistente.status);
+  expect(existente.body).toEqual(inexistente.body);
+  await new Promise((r) => setImmediate(r));
+  expect(JSON.stringify(logs.mock.calls)).not.toContain(correo);
+});
