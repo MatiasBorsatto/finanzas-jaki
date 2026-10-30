@@ -6,6 +6,9 @@ import MovimientosView from '../views/MovimientosView.vue'
 import PresupuestosView from '../views/PresupuestosView.vue'
 import TarjetasView from '../views/TarjetasView.vue'
 import MetasView from '../views/MetasView.vue'
+import GruposView from '../views/GruposView.vue'
+import GrupoDetalleView from '../views/GrupoDetalleView.vue'
+import AceptarInvitacionView from '../views/AceptarInvitacionView.vue'
 import TarjetaDetalleView from '../views/TarjetaDetalleView.vue'
 import LayoutPrincipal from '../components/LayoutPrincipal.vue'
 
@@ -22,6 +25,9 @@ export const rutas = [
       { path: 'presupuestos', name: 'presupuestos', component: PresupuestosView, meta: { requiereAuth: true } },
       { path: 'tarjetas', name: 'tarjetas', component: TarjetasView, meta: { requiereAuth: true } },
       { path: 'metas', name: 'metas', component: MetasView, meta: { requiereAuth: true } },
+      { path: 'grupos', name: 'grupos', component: GruposView, meta: { requiereAuth: true } },
+      { path: 'grupos/:id', name: 'grupo-detalle', component: GrupoDetalleView, meta: { requiereAuth: true } },
+      { path: 'invitaciones/aceptar', name: 'aceptar-invitacion', component: AceptarInvitacionView, meta: { requiereAuth: true } },
       { path: 'tarjetas/:id', name: 'tarjeta-detalle', component: TarjetaDetalleView, meta: { requiereAuth: true } }
     ]
   },
@@ -38,7 +44,7 @@ export function crearRouter(historial) {
     const sesion = useSesion()
     if (!sesion.cargada && !sesion.usuario) await sesion.cargarSesion()
     const requiereAuth = to.matched.some((r) => r.meta.requiereAuth)
-    if (requiereAuth && !sesion.usuario) return { path: '/login' }
+    if (requiereAuth && !sesion.usuario) return { path: '/login', query: { redirect: to.fullPath } }
     if ((to.path === '/login' || to.path === '/registro') && sesion.usuario) return { path: '/' }
   })
 

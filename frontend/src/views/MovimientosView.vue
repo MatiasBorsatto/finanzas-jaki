@@ -3,6 +3,8 @@ import { ref, reactive, onMounted } from 'vue'
 import FormularioMovimiento from '../components/FormularioMovimiento.vue'
 import TablaMovimientos from '../components/TablaMovimientos.vue'
 import { listarMetas } from '../services/metas.js'
+import { listarGrupos, crearGastoCompartido } from '../services/grupos.js'
+import { useSesion } from '../stores/sesion.js'
 import {
   listarMovimientos, crearMovimiento, editarMovimiento, eliminarMovimiento, listarCategorias
 } from '../services/movimientos.js'
@@ -11,6 +13,8 @@ const LIMITE = 20
 const movimientos = ref([])
 const categorias = ref([])
 const metas = ref([])
+const grupos = ref([])
+const sesion = useSesion()
 const total = ref(0)
 const page = ref(1)
 const cargando = ref(false)
@@ -53,6 +57,16 @@ async function guardar(datos) {
   }
 }
 
+async function guardarCompartido({ grupoId, datos }) {
+  error.value = ''
+  try {
+    await crearGastoCompartido(grupoId, datos)
+    await cargar()
+  } catch (e) {
+    error.value = e.mensaje || 'No se pudo guardar el gasto compartido.'
+  }
+}
+
 async function eliminar(mov) {
   if (!window.confirm('¿Eliminar este movimiento?')) return
   error.value = ''
@@ -76,6 +90,11 @@ onMounted(async () => {
   } catch {
     metas.value = []
   }
+  try {
+    grupos.value = await listarGrupos()
+  } catch {
+    grupos.value = []
+  }
   await cargar()
 })
 </script>
@@ -90,7 +109,10 @@ onMounted(async () => {
       :categorias="categorias"
       :metas="metas"
       :movimiento="editando"
+      :grupos="grupos"
+      :usuario-id="sesion.usuario?.id ?? null"
       @guardar="guardar"
+      @guardar-compartido="guardarCompartido"
       @cancelar="editando = null"
     />
 

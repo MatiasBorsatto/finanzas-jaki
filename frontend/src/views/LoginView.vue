@@ -15,7 +15,8 @@ async function enviar() {
   enviando.value = true
   try {
     await sesion.iniciarSesion(email.value, password.value)
-    await router.push('/')
+    const destino = router.currentRoute?.value?.query?.redirect
+    await router.push(typeof destino === 'string' && /^\/(?!\/)/.test(destino) ? destino : '/')
   } catch (e) {
     error.value = e.mensaje || 'No se pudo iniciar sesión'
   } finally {

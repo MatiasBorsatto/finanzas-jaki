@@ -9,7 +9,8 @@ const enlaces = [
   { to: '/movimientos', texto: 'Movimientos' },
   { to: '/presupuestos', texto: 'Presupuestos' },
   { to: '/tarjetas', texto: 'Tarjetas' },
-  { to: '/metas', texto: 'Metas' }
+  { to: '/metas', texto: 'Metas' },
+  { to: '/grupos', texto: 'Grupos' }
 ]
 
 async function salir() {

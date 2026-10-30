@@ -1,13 +1,17 @@
 <script setup>
 import { ref } from 'vue'
 import { normalizarMonto } from '../utils/formato.js'
+import { obtenerGrupo } from '../services/grupos.js'
+import FormularioGastoCompartido from './FormularioGastoCompartido.vue'
 
 const props = defineProps({
   categorias: { type: Array, default: () => [] },
   metas: { type: Array, default: () => [] },
-  movimiento: { type: Object, default: null }
+  movimiento: { type: Object, default: null },
+  grupos: { type: Array, default: () => [] },
+  usuarioId: { type: String, default: null }
 })
-const emit = defineEmits(['guardar', 'cancelar'])
+const emit = defineEmits(['guardar', 'cancelar', 'guardar-compartido'])
 
 const hoy = new Date().toISOString().slice(0, 10)
 const tipo = ref(props.movimiento?.tipo ?? 'gasto')
@@ -17,6 +21,20 @@ const descripcion = ref(props.movimiento?.descripcion ?? '')
 const categoriaId = ref(props.movimiento?.categoriaId ?? '')
 const metaId = ref('')
 const error = ref('')
+const alcance = ref('personal')
+const grupoId = ref('')
+const grupoElegido = ref(null)
+
+async function elegirGrupo() {
+  grupoElegido.value = null
+  if (!grupoId.value) return
+  try {
+    grupoElegido.value = await obtenerGrupo(grupoId.value)
+    error.value = ''
+  } catch (e) {
+    error.value = e.mensaje || 'No se pudo cargar el grupo.'
+  }
+}
 
 function enviar() {
   const montoNormal = normalizarMonto(monto.value)
@@ -41,7 +59,32 @@ function enviar() {
 </script>
 
 <template>
-  <form class="form-mov" novalidate @submit.prevent="enviar">
+  <div v-if="!movimiento && grupos.length > 0" class="form-mov alcance">
+    <label>Alcance
+      <select v-model="alcance" name="alcance">
+        <option value="personal">Personal</option>
+        <option value="compartido">Compartido con un grupo</option>
+      </select>
+    </label>
+    <label v-if="alcance === 'compartido'">Grupo
+      <select v-model="grupoId" name="grupoId" @change="elegirGrupo">
+        <option value="">Elegí un grupo</option>
+        <option v-for="g in grupos" :key="g.id" :value="g.id">{{ g.nombre }}</option>
+      </select>
+    </label>
+  </div>
+  <template v-if="alcance === 'compartido'">
+    <div v-if="error" class="error-form" role="alert">{{ error }}</div>
+    <FormularioGastoCompartido
+      v-if="grupoElegido"
+      :key="grupoElegido.id"
+      :miembros="grupoElegido.miembros"
+      :usuario-id="usuarioId"
+      :categorias="categorias"
+      @guardar="emit('guardar-compartido', { grupoId: grupoElegido.id, datos: $event })"
+    />
+  </template>
+  <form v-else class="form-mov" novalidate @submit.prevent="enviar">
     <div v-if="error" class="error-form" role="alert">{{ error }}</div>
     <label>Tipo
       <select v-model="tipo" name="tipo">
