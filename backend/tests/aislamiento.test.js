@@ -100,6 +100,7 @@ describe('aislamiento entre usuarios: B recibe 404 en los recursos de A', () => 
 
   test('tarjeta', async () => {
     const id = recursos.tarjeta.id;
+    expect((await agentA.get(`/api/tarjetas/${id}/resumen?mes=2026-10`)).status).toBe(200);
     expect((await agentB.patch(`/api/tarjetas/${id}`).send({ nombre: 'Robada' })).status).toBe(404);
     expect((await agentB.delete(`/api/tarjetas/${id}`)).status).toBe(404);
     expect((await agentB.get(`/api/tarjetas/${id}/resumen?mes=2026-10`)).status).toBe(404);
@@ -129,6 +130,8 @@ describe('aislamiento entre usuarios: B recibe 404 en los recursos de A', () => 
 
   test('grupo', async () => {
     const id = recursos.grupo.id;
+    expect((await agentA.get(`/api/grupos/${id}`)).status).toBe(200);
+    expect((await agentA.get(`/api/grupos/${id}/saldos`)).status).toBe(200);
     expect((await agentB.get(`/api/grupos/${id}`)).status).toBe(404);
     const gasto = await agentB.post(`/api/grupos/${id}/gastos`).send({
       pagadorId: idA, monto: '10.00', fecha: '2026-10-01', descripcion: 'x',
@@ -143,6 +146,9 @@ describe('aislamiento entre usuarios: B recibe 404 en los recursos de A', () => 
   test('pago', async () => {
     const id = recursos.grupo.id;
     expect(await PagoEntreMiembros.count({ where: { grupoId: id } })).toBe(1);
+    const propios = await agentA.get(`/api/grupos/${id}/pagos`);
+    expect(propios.status).toBe(200);
+    expect(propios.body).toHaveLength(1);
     expect((await agentB.get(`/api/grupos/${id}/pagos`)).status).toBe(404);
     const res = await agentB.post(`/api/grupos/${id}/pagos`).send({
       deudorId: idC, acreedorId: idA, monto: '5.00', fecha: '2026-10-06',
