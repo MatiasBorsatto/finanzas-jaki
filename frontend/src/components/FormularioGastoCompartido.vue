@@ -17,7 +17,7 @@ const descripcion = ref('')
 const categoriaId = ref('')
 const modo = ref('igual')
 const personalizados = ref({}) // { [usuarioId]: texto }
-const categoriasPart = ref({}) // { [usuarioId]: categoriaId | '' }
+const categoriasPart = ref(Object.fromEntries(props.miembros.map((m) => [m.usuarioId, '']))) // { [usuarioId]: categoriaId | '' }
 
 // Base para todos; las propias solo para el usuario actual (las de otros no son visibles).
 const categoriasDe = (uid) =>

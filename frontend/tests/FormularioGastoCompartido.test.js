@@ -67,4 +67,11 @@ describe('FormularioGastoCompartido', () => {
     expect(ps[1]).toEqual({ usuarioId: 'u2', monto: '30.00', categoriaId: 'c-base' })
     expect(ps[2]).toEqual({ usuarioId: 'u3', monto: '30.00' })
   })
+
+  it('el selector de categoría muestra "Heredar del gasto" por defecto', () => {
+    const w = mount(FormularioGastoCompartido, { props: { miembros, usuarioId: 'u1', categorias: [] } })
+    const sel = w.find('select[name="categoria-u2"]')
+    expect(sel.element.value).toBe('')
+    expect(sel.element.selectedOptions[0].textContent).toBe('Heredar del gasto')
+  })
 })
