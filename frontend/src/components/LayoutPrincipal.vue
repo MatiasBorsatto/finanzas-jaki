@@ -10,7 +10,8 @@ const enlaces = [
   { to: '/presupuestos', texto: 'Presupuestos' },
   { to: '/tarjetas', texto: 'Tarjetas' },
   { to: '/metas', texto: 'Metas' },
-  { to: '/grupos', texto: 'Grupos' }
+  { to: '/grupos', texto: 'Grupos' },
+  { to: '/estadisticas', texto: 'Estadísticas' }
 ]
 
 async function salir() {

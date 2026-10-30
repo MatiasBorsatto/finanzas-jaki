@@ -9,6 +9,7 @@ import MetasView from '../views/MetasView.vue'
 import GruposView from '../views/GruposView.vue'
 import GrupoDetalleView from '../views/GrupoDetalleView.vue'
 import AceptarInvitacionView from '../views/AceptarInvitacionView.vue'
+import EstadisticasView from '../views/EstadisticasView.vue'
 import TarjetaDetalleView from '../views/TarjetaDetalleView.vue'
 import LayoutPrincipal from '../components/LayoutPrincipal.vue'
 
@@ -25,6 +26,7 @@ export const rutas = [
       { path: 'presupuestos', name: 'presupuestos', component: PresupuestosView, meta: { requiereAuth: true } },
       { path: 'tarjetas', name: 'tarjetas', component: TarjetasView, meta: { requiereAuth: true } },
       { path: 'metas', name: 'metas', component: MetasView, meta: { requiereAuth: true } },
+      { path: 'estadisticas', name: 'estadisticas', component: EstadisticasView, meta: { requiereAuth: true } },
       { path: 'grupos', name: 'grupos', component: GruposView, meta: { requiereAuth: true } },
       { path: 'grupos/:id', name: 'grupo-detalle', component: GrupoDetalleView, meta: { requiereAuth: true } },
       { path: 'invitaciones/aceptar', name: 'aceptar-invitacion', component: AceptarInvitacionView, meta: { requiereAuth: true } },

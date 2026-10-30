@@ -63,3 +63,33 @@ button, input { font: inherit; }
 .error-form { padding: 10px; margin-bottom: 12px; border-radius: 8px; background: var(--error-fondo); color: var(--error); }
 .pie-acceso { margin-bottom: 0; text-align: center; color: var(--texto-suave); }
 .pie-acceso a { color: var(--primario); }
+
+/* Paleta de gráficos (se leen en runtime con getComputedStyle) */
+:root {
+  --grafico-1: #1f7a5c;
+  --grafico-2: #c2410c;
+  --grafico-3: #2563eb;
+  --grafico-4: #9333ea;
+  --grafico-5: #b45309;
+  --grafico-6: #0e7490;
+  --grafico-7: #be185d;
+  --grafico-8: #4d7c0f;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --grafico-1: #3fb68b;
+    --grafico-2: #fb923c;
+    --grafico-3: #60a5fa;
+    --grafico-4: #c084fc;
+    --grafico-5: #fbbf24;
+    --grafico-6: #22d3ee;
+    --grafico-7: #f472b6;
+    --grafico-8: #a3e635;
+  }
+}
+
+.solo-lectores {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
