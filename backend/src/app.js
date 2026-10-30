@@ -11,6 +11,7 @@ const metasRoutes = require('./modules/metas/metas.routes');
 const gruposRoutes = require('./modules/grupos/grupos.routes');
 const saldosRoutes = require('./modules/saldos/saldos.routes');
 const invitacionesRoutes = require('./modules/grupos/invitaciones.routes');
+const estadisticasRoutes = require('./modules/estadisticas/estadisticas.routes');
 const { manejarErrores } = require('./middlewares/manejarErrores');
 
 function createApp() {
@@ -33,6 +34,7 @@ function createApp() {
   app.use('/api/grupos', gruposRoutes);
   app.use('/api/grupos', saldosRoutes);
   app.use('/api/invitaciones', invitacionesRoutes);
+  app.use('/api/estadisticas', estadisticasRoutes);
   app.use(manejarErrores);
 
   return app;
