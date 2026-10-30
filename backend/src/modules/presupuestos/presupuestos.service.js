@@ -56,10 +56,11 @@ async function eliminarPresupuesto(usuarioId, id) {
   await p.destroy();
 }
 
-async function estadoPresupuestos(usuarioId, mes) {
+// Solo lectura: no registra alertas.
+async function calcularEstadosPresupuestos(usuarioId, mes) {
   const presupuestos = await listarPresupuestos(usuarioId, mes);
   if (presupuestos.length === 0) return [];
-  const estados = await Promise.all(presupuestos.map(async (p) => {
+  return Promise.all(presupuestos.map(async (p) => {
     const consumido = await consumoPresupuesto(usuarioId, p.categoriaId, p.mes, p.regla);
     return {
       id: p.id,
@@ -71,6 +72,10 @@ async function estadoPresupuestos(usuarioId, mes) {
       ...calcularEstado({ montoLimite: p.montoLimite, consumido }),
     };
   }));
+}
+
+async function estadoPresupuestos(usuarioId, mes) {
+  const estados = await calcularEstadosPresupuestos(usuarioId, mes);
   await registrarAlertas(usuarioId, estados);
   return estados;
 }
@@ -93,4 +98,4 @@ async function registrarAlertas(usuarioId, estados) {
   }
 }
 
-module.exports = { consumoPresupuesto, upsertPresupuesto, listarPresupuestos, eliminarPresupuesto, estadoPresupuestos };
+module.exports = { consumoPresupuesto, calcularEstadosPresupuestos, upsertPresupuesto, listarPresupuestos, eliminarPresupuesto, estadoPresupuestos };

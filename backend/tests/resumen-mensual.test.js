@@ -2,7 +2,7 @@ const request = require('supertest');
 const { createApp } = require('../src/app');
 const { sequelize } = require('../src/db/sequelize');
 const {
-  Usuario, Grupo, MiembroGrupo, Categoria, Movimiento, ParticipacionGasto, Meta, AporteMeta, Presupuesto, Tarjeta,
+  Usuario, Grupo, MiembroGrupo, Categoria, Movimiento, ParticipacionGasto, Meta, AporteMeta, Presupuesto, Tarjeta, Notificacion,
 } = require('../src/db/models');
 const { calcularResumen } = require('../src/modules/estadisticas/resumenMensual.calculo');
 
@@ -93,6 +93,7 @@ afterAll(async () => {
   await ParticipacionGasto.destroy({ where: { movimientoId: movs.map((m) => m.id) } });
   await Movimiento.destroy({ where: { usuarioId: usuarios } });
   await Meta.destroy({ where: { usuarioId: usuarios } });
+  await Notificacion.destroy({ where: { usuarioId: usuarios } });
   await Presupuesto.destroy({ where: { usuarioId: usuarios } });
   await Tarjeta.destroy({ where: { usuarioId: usuarios } });
   await MiembroGrupo.destroy({ where: { grupoId } });
@@ -161,4 +162,14 @@ test('los datos de otro usuario no aparecen (B solo ve lo suyo)', async () => {
   expect(res.body.gastos).toBe('40.00');
   expect(res.body.aportesMetas).toBe('0.00');
   expect(res.body.gastosPorCategoria.map((c) => c.nombre)).not.toContain('Comida');
+});
+
+test('GET mensual no escribe notificaciones aunque un presupuesto supere el 100%', async () => {
+  // catOcio ya tiene 25.00 de gasto en 2026-10; con limite 10.00 esta al 250%.
+  await agentA.put('/api/presupuestos').send({ categoriaId: catOcio, mes: '2026-10', montoLimite: '10.00', regla: 'con_compartidos' });
+  const antes = await Notificacion.count({ where: { usuarioId: ids.a } });
+  const res = await mensual(agentA);
+  expect(res.status).toBe(200);
+  expect(res.body.presupuestos.find((p) => p.categoriaId === catOcio).alerta).toBe('100');
+  expect(await Notificacion.count({ where: { usuarioId: ids.a } })).toBe(antes);
 });

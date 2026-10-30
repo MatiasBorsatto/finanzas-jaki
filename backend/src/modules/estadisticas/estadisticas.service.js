@@ -2,7 +2,7 @@ const { Op } = require('sequelize');
 const { Movimiento, ParticipacionGasto, Categoria, Meta, AporteMeta } = require('../../db/models');
 const { sumar } = require('../../utils/dinero');
 const { rangoDelMes } = require('../movimientos/movimientos.service');
-const { estadoPresupuestos } = require('../presupuestos/presupuestos.service');
+const { calcularEstadosPresupuestos } = require('../presupuestos/presupuestos.service');
 const { calcularResumen } = require('./resumenMensual.calculo');
 
 // Solo datos del usuario: sus movimientos personales y su parte (ParticipacionGasto) en gastos
@@ -47,7 +47,7 @@ async function aportesDelMes(usuarioId, mes) {
 async function resumenMensual(usuarioId, mes) {
   const [lineas, presupuestos, aportesMetas] = await Promise.all([
     lineasDelMes(usuarioId, mes),
-    estadoPresupuestos(usuarioId, mes),
+    calcularEstadosPresupuestos(usuarioId, mes),
     aportesDelMes(usuarioId, mes),
   ]);
   return { mes, ...calcularResumen(lineas, presupuestos), aportesMetas };
