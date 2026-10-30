@@ -30,4 +30,18 @@ describe('CampanaNotificaciones', () => {
     expect(marcarLeida).toHaveBeenCalledWith('1')
     expect(wrapper.find('[data-testid="contador"]').text()).toBe('1')
   })
+
+  it('el panel tiene nombre accesible y Escape lo cierra devolviendo el foco a la campana', async () => {
+    const wrapper = mount(CampanaNotificaciones, { attachTo: document.body })
+    await flushPromises()
+    const boton = wrapper.find('button.campana')
+    await boton.trigger('click')
+    const panel = wrapper.find('[role="region"]')
+    expect(panel.attributes('aria-label')).toBe('Notificaciones')
+    expect(boton.attributes('aria-controls')).toBe(panel.attributes('id'))
+    await panel.trigger('keydown', { key: 'Escape' })
+    expect(wrapper.find('[role="region"]').exists()).toBe(false)
+    expect(document.activeElement).toBe(boton.element)
+    wrapper.unmount()
+  })
 })

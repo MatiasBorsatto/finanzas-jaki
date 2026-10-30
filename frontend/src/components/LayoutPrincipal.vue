@@ -44,18 +44,22 @@ async function salir() {
   background: none; border: 0; text-align: left; cursor: pointer;
 }
 .enlace.router-link-active { background: var(--primario); color: var(--primario-texto); }
-.salir { margin-top: auto; color: var(--texto-suave); }
+.salir { margin-top: auto; color: var(--texto-suave); font: inherit; }
 .contenido { flex: 1; min-width: 0; padding: 24px; }
 
 @media (max-width: 767px) {
   .layout { flex-direction: column; }
   .marca { display: none; }
   .navegacion {
-    position: fixed; bottom: 0; left: 0; right: 0; width: 100%; flex-direction: row; align-items: center;
-    gap: 0; padding: 6px 0; border-right: 0; border-top: 1px solid var(--borde); z-index: 10;
+    position: fixed; bottom: 0; left: 0; right: 0; width: 100%;
+    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: stretch;
+    gap: 2px; padding: 6px; border-right: 0; border-top: 1px solid var(--borde); z-index: 10;
   }
-  .enlace { flex: 1 0 auto; text-align: center; padding: 10px 1px; font-size: 0.68rem; white-space: nowrap; }
+  .enlace {
+    display: flex; align-items: center; justify-content: center; min-height: 44px;
+    padding: 6px 4px; font-size: 0.8rem; text-align: center; overflow-wrap: anywhere;
+  }
   .salir { margin-top: 0; }
-  .contenido { padding: 16px 16px 80px; }
+  .contenido { padding: 16px 16px 120px; }
 }
 </style>

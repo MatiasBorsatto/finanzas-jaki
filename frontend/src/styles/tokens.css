@@ -1,0 +1,56 @@
+:root {
+  --fondo: #f6f7f9;
+  --superficie: #ffffff;
+  --texto: #1c2430;
+  --texto-suave: #5b6676;
+  --borde: #d9dee6;
+  --primario: #1f7a5c;
+  --primario-texto: #ffffff;
+  --error: #b3261e;
+  --error-fondo: #fdecea;
+  --advertencia: #8a5300;
+  --insignia: #b3261e;
+  --insignia-texto: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fondo: #12161c;
+    --superficie: #1b2129;
+    --texto: #e8ecf1;
+    --texto-suave: #9aa5b4;
+    --borde: #2f3845;
+    --primario: #3fb68b;
+    --primario-texto: #0d1a14;
+    --error: #f2b8b5;
+    --error-fondo: #3a1f1d;
+    --advertencia: #e0a030;
+    --insignia: #c4362c;
+    --insignia-texto: #ffffff;
+  }
+}
+
+/* Paleta de gráficos (se leen en runtime con getComputedStyle) */
+:root {
+  --grafico-1: #1f7a5c;
+  --grafico-2: #c2410c;
+  --grafico-3: #2563eb;
+  --grafico-4: #9333ea;
+  --grafico-5: #b45309;
+  --grafico-6: #0e7490;
+  --grafico-7: #be185d;
+  --grafico-8: #4d7c0f;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --grafico-1: #3fb68b;
+    --grafico-2: #fb923c;
+    --grafico-3: #60a5fa;
+    --grafico-4: #c084fc;
+    --grafico-5: #fbbf24;
+    --grafico-6: #22d3ee;
+    --grafico-7: #f472b6;
+    --grafico-8: #a3e635;
+  }
+}
