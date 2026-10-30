@@ -19,7 +19,7 @@ function validarPasswordNueva(password) {
 }
 
 function publico(u) {
-  return { id: u.id, nombre: u.nombre, email: u.email };
+  return { id: u.id, nombre: u.nombre, email: u.email, preferenciasEmail: u.preferenciasEmail };
 }
 
 async function obtenerPerfil(usuarioId) {
@@ -28,7 +28,7 @@ async function obtenerPerfil(usuarioId) {
   return publico(u);
 }
 
-async function actualizarPerfil(usuarioId, { nombre, email: nuevoEmail, passwordActual, passwordNueva } = {}) {
+async function actualizarPerfil(usuarioId, { nombre, email: nuevoEmail, passwordActual, passwordNueva, preferenciasEmail } = {}) {
   const u = await Usuario.findByPk(usuarioId);
   if (!u) throw new ErrorNoAutenticado('No autenticado');
   const cambios = {};
@@ -44,6 +44,10 @@ async function actualizarPerfil(usuarioId, { nombre, email: nuevoEmail, password
       if (await Usuario.findOne({ where: { email: normalizado } })) throw new ErrorConflicto('El email ya está registrado');
       cambios.email = normalizado;
     }
+  }
+  if (preferenciasEmail !== undefined) {
+    if (typeof preferenciasEmail !== 'boolean') throw new ErrorValidacion('preferenciasEmail debe ser verdadero o falso');
+    cambios.preferenciasEmail = preferenciasEmail;
   }
   if (passwordNueva !== undefined) {
     validarPasswordNueva(passwordNueva);
