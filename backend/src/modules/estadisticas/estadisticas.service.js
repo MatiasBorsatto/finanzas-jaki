@@ -53,4 +53,4 @@ async function resumenMensual(usuarioId, mes) {
   return { mes, ...calcularResumen(lineas, presupuestos), aportesMetas };
 }
 
-module.exports = { resumenMensual };
+module.exports = { resumenMensual, lineasDelMes, aportesDelMes };
