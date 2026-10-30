@@ -158,18 +158,18 @@ describe('herencia de categoría por defecto', () => {
     await Categoria.destroy({ where: { id: base.id } });
   });
 
-  test('categoría base: todos los participantes la heredan', async () => {
+  test('sin categoría explícita: una categoría base la heredan todos', async () => {
     const res = await gasto({ categoriaId: base.id });
     expect(res.status).toBe(201);
     expect(await partesDe(res.body.id)).toEqual({ [ids.a]: base.id, [ids.b]: base.id });
   });
 
-  test('categoría propia del creador: los demás quedan en null', async () => {
+  test('sin categoría explícita: una categoría propia solo la hereda su dueño y los demás quedan en null', async () => {
     const res = await gasto({ categoriaId: catComida });
     expect(await partesDe(res.body.id)).toEqual({ [ids.a]: catComida, [ids.b]: null });
   });
 
-  test('la categoría explícita del participante gana', async () => {
+  test('la categoría explícita del participante siempre gana', async () => {
     const catB = (await agentB.post('/api/categorias').send({ nombre: 'Explícita' })).body.id;
     const res = await gasto({
       categoriaId: catComida,

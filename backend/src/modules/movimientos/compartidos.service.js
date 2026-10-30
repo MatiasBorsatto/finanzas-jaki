@@ -39,12 +39,10 @@ async function crearGastoCompartido(
   if (!(await esMiembro(grupoId, pagadorId))) throw new ErrorValidacion('El pagador debe ser miembro del grupo');
   await verificarCategoria(usuarioId, categoriaId);
   const partes = await calcularParticipaciones(grupoId, monto, participantes);
-  // Sin categoría explícita se hereda la del gasto solo si es base (o si el participante es quien
-  // la creó); una categoría propia del creador no existe para los demás, que la eligen después.
-  const esBase = categoriaId
-    ? Boolean(await Categoria.findOne({ where: { id: categoriaId, usuarioId: null } }))
-    : false;
-  const heredada = (uid) => (esBase || uid === usuarioId ? categoriaId : null);
+  // Sin categoría explícita, la participación hereda la del gasto si es base o del propio participante;
+  // si no, queda en null y el participante la elige después.
+  const catGasto = categoriaId ? await Categoria.findByPk(categoriaId) : null;
+  const heredada = (uid) => (catGasto && (catGasto.usuarioId === null || catGasto.usuarioId === uid) ? categoriaId : null);
   // Cada participante puede imputar su parte a una categoría propia (o base); por defecto, la del gasto.
   for (const p of partes) await verificarCategoria(p.usuarioId, p.categoriaId);
 
