@@ -1,10 +1,22 @@
-async function pedir(metodo, url, cuerpo) {
+const SIN_REFRESCO = ['/auth/refresh', '/auth/login']
+
+async function pedir(metodo, url, cuerpo, reintento = false) {
   const opciones = { method: metodo, credentials: 'include', headers: {} }
   if (cuerpo !== undefined) {
     opciones.headers['Content-Type'] = 'application/json'
     opciones.body = JSON.stringify(cuerpo)
   }
-  const respuesta = await fetch(`/api${url}`, opciones)
+  let respuesta = await fetch(`/api${url}`, opciones)
+  // El access token dura poco: ante un 401 se refresca la sesión una vez y se reintenta.
+  if (respuesta.status === 401 && !reintento && !SIN_REFRESCO.includes(url)) {
+    let refrescada = false
+    try {
+      refrescada = (await fetch('/api/auth/refresh', { method: 'POST', credentials: 'include', headers: {} })).ok
+    } catch {
+      refrescada = false
+    }
+    if (refrescada) respuesta = await fetch(`/api${url}`, opciones)
+  }
   let datos = null
   if (respuesta.status !== 204) {
     try {
