@@ -4,6 +4,10 @@ const { dividirEnPartes } = require('../../utils/dinero');
 const { mesDeCuota, diaValido } = require('../../utils/fechas');
 const { verificarCategoria } = require('../movimientos/movimientos.service');
 const { obtenerPropia } = require('./tarjetas.service');
+const { ErrorValidacion } = require('../../utils/errores');
+
+// El sufijo " (n/N)" se agrega a la descripción y todo debe entrar en STRING(255).
+const MAX_DESCRIPCION_COMPRA = 200;
 
 // fecha es YYYY-MM-DD (calendario); se interpreta al mediodía de Buenos Aires (UTC-3).
 const aInstante = (fecha) => new Date(`${fecha}T12:00:00-03:00`);
@@ -17,6 +21,9 @@ function fechaCuota(mes, diaCierre) {
 
 async function crearCompra(usuarioId, tarjetaId, datos) {
   const { montoTotal, cuotas, modalidad, fecha, categoriaId = null, descripcion = null } = datos;
+  if (descripcion && descripcion.length > MAX_DESCRIPCION_COMPRA) {
+    throw new ErrorValidacion(`La descripción no puede superar ${MAX_DESCRIPCION_COMPRA} caracteres`);
+  }
   const tarjeta = await obtenerPropia(usuarioId, tarjetaId);
   await verificarCategoria(usuarioId, categoriaId);
 

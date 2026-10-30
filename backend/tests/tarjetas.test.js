@@ -118,3 +118,12 @@ test('POST /tarjetas/:id/compras crea la compra; otro usuario recibe 404; datos 
 test('no se puede borrar una tarjeta con compras (409)', async () => {
   expect((await agentA.delete(`/api/tarjetas/${tarjeta.id}`)).status).toBe(409);
 });
+
+test('la descripción de una compra admite hasta 200 caracteres (201) y 201 da 400', async () => {
+  const body = { montoTotal: '1200', cuotas: 3, modalidad: 'por_cuota', fecha: '2026-05-01' };
+  const larga = await agentA.post(`/api/tarjetas/${tarjeta.id}/compras`).send({ ...body, descripcion: 'a'.repeat(201) });
+  expect(larga.status).toBe(400);
+  const justa = await agentA.post(`/api/tarjetas/${tarjeta.id}/compras`).send({ ...body, descripcion: 'a'.repeat(200) });
+  expect(justa.status).toBe(201);
+  expect(justa.body.movimientos[0].descripcion).toBe(`${'a'.repeat(200)} (1/3)`);
+});
