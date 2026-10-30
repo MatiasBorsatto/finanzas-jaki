@@ -2,9 +2,9 @@
 import { ref, onMounted } from 'vue'
 import BarraMeta from '../components/BarraMeta.vue'
 import { listarMetas, crearMeta, eliminarMeta, registrarAporte } from '../services/metas.js'
-import { normalizarMonto } from '../utils/formato.js'
+import { normalizarMonto, hoyLocal } from '../utils/formato.js'
 
-const hoy = new Date().toISOString().slice(0, 10)
+const hoy = hoyLocal()
 const metas = ref([])
 const cargando = ref(false)
 const error = ref('')

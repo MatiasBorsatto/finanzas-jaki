@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
-import { formatearMonto, normalizarMonto, aCentavos, deCentavos } from '../utils/formato.js'
+import { formatearMonto, normalizarMonto, aCentavos, deCentavos, hoyLocal } from '../utils/formato.js'
 
 const props = defineProps({
   miembros: { type: Array, required: true }, // [{ usuarioId, nombre }]
@@ -9,7 +9,7 @@ const props = defineProps({
 })
 const emit = defineEmits(['guardar'])
 
-const hoy = new Date().toISOString().slice(0, 10)
+const hoy = hoyLocal()
 const pagadorId = ref(props.usuarioId ?? props.miembros[0]?.usuarioId ?? '')
 const monto = ref('')
 const fecha = ref(hoy)

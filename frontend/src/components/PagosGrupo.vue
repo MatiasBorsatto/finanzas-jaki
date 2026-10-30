@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import { formatearMonto, normalizarMonto } from '../utils/formato.js'
+import { formatearMonto, normalizarMonto, hoyLocal } from '../utils/formato.js'
 
 const props = defineProps({
   miembros: { type: Array, default: () => [] }, // [{ usuarioId, nombre }]
@@ -10,7 +10,7 @@ const props = defineProps({
 })
 const emit = defineEmits(['registrar'])
 
-const hoy = new Date().toISOString().slice(0, 10)
+const hoy = hoyLocal()
 const deudorId = ref(props.usuarioId ?? '')
 const acreedorId = ref('')
 const monto = ref('')

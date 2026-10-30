@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import { normalizarMonto } from '../utils/formato.js'
+import { normalizarMonto, hoyLocal } from '../utils/formato.js'
 import { obtenerGrupo } from '../services/grupos.js'
 import FormularioGastoCompartido from './FormularioGastoCompartido.vue'
 
@@ -13,7 +13,7 @@ const props = defineProps({
 })
 const emit = defineEmits(['guardar', 'cancelar', 'guardar-compartido'])
 
-const hoy = new Date().toISOString().slice(0, 10)
+const hoy = hoyLocal()
 const tipo = ref(props.movimiento?.tipo ?? 'gasto')
 const monto = ref(props.movimiento ? String(props.movimiento.monto).replace('.', ',') : '')
 const fecha = ref(props.movimiento?.fecha ?? hoy)

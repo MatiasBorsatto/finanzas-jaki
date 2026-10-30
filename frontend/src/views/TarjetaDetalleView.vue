@@ -4,7 +4,7 @@ import { useRoute } from 'vue-router'
 import FormularioCompra from '../components/FormularioCompra.vue'
 import { listarCategorias } from '../services/movimientos.js'
 import { listarTarjetas, crearCompra, resumenTarjeta, registrarPago } from '../services/tarjetas.js'
-import { formatearMonto, normalizarMonto } from '../utils/formato.js'
+import { formatearMonto, normalizarMonto, hoyLocal } from '../utils/formato.js'
 
 const route = useRoute()
 const id = computed(() => route.params.id)
@@ -15,7 +15,7 @@ const resumen = ref(null)
 const categorias = ref([])
 const mostrarCompra = ref(false)
 const montoPago = ref('')
-const fechaPago = ref(ahora.toISOString().slice(0, 10))
+const fechaPago = ref(hoyLocal())
 const error = ref('')
 const aviso = ref('')
 

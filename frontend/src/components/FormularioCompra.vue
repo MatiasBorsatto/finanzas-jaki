@@ -1,13 +1,13 @@
 <script setup>
 import { ref } from 'vue'
-import { normalizarMonto } from '../utils/formato.js'
+import { normalizarMonto, hoyLocal } from '../utils/formato.js'
 
 defineProps({
   categorias: { type: Array, default: () => [] }
 })
 const emit = defineEmits(['guardar', 'cancelar'])
 
-const hoy = new Date().toISOString().slice(0, 10)
+const hoy = hoyLocal()
 const montoTotal = ref('')
 const cuotas = ref('1')
 const modalidad = ref('por_cuota')

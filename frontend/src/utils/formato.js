@@ -1,3 +1,9 @@
+// Fecha de hoy en el calendario local (YYYY-MM-DD); toISOString usaría UTC y adelanta el día de noche.
+export function hoyLocal(fecha = new Date()) {
+  const dos = (n) => String(n).padStart(2, '0')
+  return `${fecha.getFullYear()}-${dos(fecha.getMonth() + 1)}-${dos(fecha.getDate())}`
+}
+
 // Formato de dinero argentino a partir de un string decimal ("1500.50"); sin floats.
 export function formatearMonto(monto) {
   const m = /^(-?)(\d+)(?:\.(\d{1,2}))?$/.exec(String(monto).trim())
