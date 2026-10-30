@@ -28,4 +28,12 @@ describe('SaldosGrupo', () => {
     await w.find('button').trigger('click')
     expect(w.emitted('registrar-pago')).toHaveLength(1)
   })
+
+  it('sin usuarioId usa redacción neutral', () => {
+    const w = mount(SaldosGrupo, { props: { saldos } })
+    const filas = w.findAll('[data-saldo]').map((f) => f.text())
+    expect(filas[0]).toContain('le deben')
+    expect(filas[1]).toContain('debe $')
+    expect(filas.join(' ')).not.toMatch(/te deben|debés/)
+  })
 })

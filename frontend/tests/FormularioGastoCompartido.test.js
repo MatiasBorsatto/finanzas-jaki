@@ -51,4 +51,20 @@ describe('FormularioGastoCompartido', () => {
       { usuarioId: 'u3', monto: '19.50' }
     ])
   })
+
+  it('incluye categoriaId solo en el participante con categoría elegida', async () => {
+    const base = { id: 'c-base', nombre: 'Comida', usuarioId: null }
+    const propia = { id: 'c-propia', nombre: 'Mía', usuarioId: 'u1' }
+    const w = mount(FormularioGastoCompartido, { props: { miembros, usuarioId: 'u1', categorias: [base, propia] } })
+    await w.find('input[name="monto"]').setValue('90')
+    await w.find('select[name="categoria-u1"]').setValue('c-propia')
+    await w.find('select[name="categoria-u2"]').setValue('c-base')
+    // la categoría propia no se ofrece a otro participante
+    expect(w.find('select[name="categoria-u2"]').findAll('option').map((o) => o.text())).not.toContain('Mía')
+    await w.find('form').trigger('submit')
+    const ps = w.emitted('guardar')[0][0].participantes
+    expect(ps[0]).toEqual({ usuarioId: 'u1', monto: '30.00', categoriaId: 'c-propia' })
+    expect(ps[1]).toEqual({ usuarioId: 'u2', monto: '30.00', categoriaId: 'c-base' })
+    expect(ps[2]).toEqual({ usuarioId: 'u3', monto: '30.00' })
+  })
 })

@@ -17,6 +17,11 @@ const descripcion = ref('')
 const categoriaId = ref('')
 const modo = ref('igual')
 const personalizados = ref({}) // { [usuarioId]: texto }
+const categoriasPart = ref({}) // { [usuarioId]: categoriaId | '' }
+
+// Base para todos; las propias solo para el usuario actual (las de otros no son visibles).
+const categoriasDe = (uid) =>
+  props.categorias.filter((c) => !c.usuarioId || (uid === props.usuarioId && c.usuarioId === props.usuarioId))
 const error = ref('')
 
 const total = computed(() => normalizarMonto(monto.value))
@@ -69,7 +74,11 @@ function enviar() {
     fecha: fecha.value,
     descripcion: descripcion.value.trim() || null,
     categoriaId: categoriaId.value || null,
-    participantes: reparto.value.filter((r) => r.monto).map((r) => ({ usuarioId: r.usuarioId, monto: r.monto }))
+    participantes: reparto.value.filter((r) => r.monto).map((r) => ({
+      usuarioId: r.usuarioId,
+      monto: r.monto,
+      ...(categoriasPart.value[r.usuarioId] ? { categoriaId: categoriasPart.value[r.usuarioId] } : {})
+    }))
   })
 }
 </script>
@@ -117,6 +126,10 @@ function enviar() {
           placeholder="0,00"
           :aria-label="`Monto de ${m.nombre}`"
         />
+        <select v-model="categoriasPart[m.usuarioId]" :name="`categoria-${m.usuarioId}`" :aria-label="`Categoría de ${m.nombre}`">
+          <option value="">Heredar del gasto</option>
+          <option v-for="c in categoriasDe(m.usuarioId)" :key="c.id" :value="c.id">{{ c.nombre }}</option>
+        </select>
       </li>
     </ul>
     <p v-if="modo === 'personalizado' && total && !sumaCoincide" class="aviso" role="status">
@@ -138,7 +151,8 @@ function enviar() {
 }
 .error-form { grid-column: 1 / -1; padding: 10px; border-radius: 8px; background: var(--error-fondo); color: var(--error); }
 .reparto { grid-column: 1 / -1; list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
-.reparto li { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.reparto li { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.reparto select { max-width: 100%; padding: 8px; background: var(--superficie); color: var(--texto); border: 1px solid var(--borde); border-radius: 8px; }
 .reparto input { width: 140px; margin: 0; }
 .nombre { overflow-wrap: anywhere; min-width: 0; }
 .aviso { grid-column: 1 / -1; margin: 0; color: var(--error); }

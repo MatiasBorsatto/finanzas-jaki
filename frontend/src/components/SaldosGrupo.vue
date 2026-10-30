@@ -8,7 +8,7 @@ const props = defineProps({
 })
 defineEmits(['registrar-pago'])
 
-const esMio = (s) => props.usuarioId === null || s.usuarioId === props.usuarioId
+const esMio = (s) => props.usuarioId !== null && s.usuarioId === props.usuarioId
 
 function descripcion(s) {
   if (s.saldo.startsWith('-')) {
