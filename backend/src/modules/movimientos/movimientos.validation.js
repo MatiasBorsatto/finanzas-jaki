@@ -86,6 +86,31 @@ function validarGastoCompartido(body = {}) {
   return datos;
 }
 
+function validarEdicionGastoCompartido(body = {}) {
+  const datos = {};
+  if (body.fecha !== undefined) datos.fecha = validarFecha(body.fecha);
+  if (body.monto !== undefined) datos.monto = validarMonto(body.monto);
+  if (body.descripcion !== undefined) {
+    datos.descripcion = validarDescripcion(body.descripcion);
+    if (datos.descripcion && datos.descripcion.length > 200) {
+      throw new ErrorValidacion('La descripción no puede superar los 200 caracteres');
+    }
+  }
+  if (body.categoriaId !== undefined) {
+    datos.categoriaId = body.categoriaId === null ? null : validarUuid(body.categoriaId, 'categoriaId');
+  }
+  if (body.pagadorId !== undefined) datos.pagadorId = validarUuid(body.pagadorId, 'pagadorId');
+  if (body.participantes !== undefined && body.participantes !== null) {
+    datos.participantes = validarGastoCompartido({
+      ...body,
+      pagadorId: body.pagadorId ?? '00000000-0000-4000-8000-000000000000',
+      monto: '1',
+      fecha: '2000-01-01',
+    }).participantes;
+  }
+  return datos;
+}
+
 function entero(valor, nombre) {
   if (typeof valor !== 'string' || !/^\d+$/.test(valor) || Number(valor) < 1) {
     throw new ErrorValidacion(`${nombre} inválido`);
@@ -107,6 +132,7 @@ function validarFiltros(query = {}) {
 module.exports = {
   validarCrear,
   validarGastoCompartido,
+  validarEdicionGastoCompartido,
   validarEditar,
   validarFiltros,
   validarMes,

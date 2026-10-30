@@ -1,14 +1,22 @@
 const { Router } = require('express');
 const { autenticar } = require('../../middlewares/autenticar');
 const { grupoAccesible } = require('../../middlewares/grupoAccesible');
-const { validarUuid, validarGastoCompartido } = require('../movimientos/movimientos.validation');
-const { ErrorValidacion } = require('../../utils/errores');
+const { validarUuid, validarGastoCompartido, validarEdicionGastoCompartido, validarFiltros } = require('../movimientos/movimientos.validation');
+const { ErrorValidacion, ErrorNoEncontrado } = require('../../utils/errores');
 const service = require('./grupos.service');
 const invitaciones = require('./invitaciones.service');
 const compartidos = require('../movimientos/compartidos.service');
 
 const router = Router();
 router.use(autenticar);
+
+function idGasto(valor) {
+  try {
+    return validarUuid(valor, 'movimientoId');
+  } catch {
+    throw new ErrorNoEncontrado('Gasto no encontrado');
+  }
+}
 
 function validarNombre(body) {
   const nombre = typeof body?.nombre === 'string' ? body.nombre.trim() : '';
@@ -68,6 +76,24 @@ router.delete('/:id/invitaciones/:invitacionId', grupoAccesible('admin'), async 
 router.post('/:id/gastos', grupoAccesible(), async (req, res) => {
   const datos = validarGastoCompartido(req.body);
   res.status(201).json(await compartidos.crearGastoCompartido(req.usuario.id, { ...datos, grupoId: req.grupoId }));
+});
+
+router.get('/:id/gastos', grupoAccesible(), async (req, res) => {
+  const { page, limit } = validarFiltros({ page: req.query.page, limit: req.query.limit });
+  const { items, total } = await compartidos.listarGastosCompartidos(req.grupoId, { page, limit });
+  res.json({ items, total, page, limit });
+});
+
+router.patch('/:id/gastos/:movimientoId', grupoAccesible(), async (req, res) => {
+  const movimientoId = idGasto(req.params.movimientoId);
+  const datos = validarEdicionGastoCompartido(req.body);
+  res.json(await compartidos.editarGastoCompartido(req.usuario.id, req.grupoId, movimientoId, datos));
+});
+
+router.delete('/:id/gastos/:movimientoId', grupoAccesible(), async (req, res) => {
+  const movimientoId = idGasto(req.params.movimientoId);
+  await compartidos.eliminarGastoCompartido(req.usuario.id, req.grupoId, movimientoId);
+  res.status(204).end();
 });
 
 router.post('/:id/salir', grupoAccesible(), async (req, res) => {
