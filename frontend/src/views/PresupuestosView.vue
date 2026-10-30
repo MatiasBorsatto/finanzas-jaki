@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue'
 import BarraPresupuesto from '../components/BarraPresupuesto.vue'
 import { listarCategorias } from '../services/movimientos.js'
 import { estadoPresupuestos, guardarPresupuesto, eliminarPresupuesto } from '../services/presupuestos.js'
-import { normalizarMonto, hoyLocal } from '../utils/formato.js'
+import { normalizarMonto } from '../utils/formato.js'
 
 const ahora = new Date()
 const mes = ref(`${ahora.getFullYear()}-${String(ahora.getMonth() + 1).padStart(2, '0')}`)
