@@ -11,11 +11,13 @@ import GrupoDetalleView from '../views/GrupoDetalleView.vue'
 import AceptarInvitacionView from '../views/AceptarInvitacionView.vue'
 import EstadisticasView from '../views/EstadisticasView.vue'
 import TarjetaDetalleView from '../views/TarjetaDetalleView.vue'
+import RestablecerView from '../views/RestablecerView.vue'
 import LayoutPrincipal from '../components/LayoutPrincipal.vue'
 
 export const rutas = [
   { path: '/login', name: 'login', component: LoginView },
   { path: '/registro', name: 'registro', component: RegistroView },
+  { path: '/restablecer', name: 'restablecer', component: RestablecerView },
   {
     path: '/',
     component: LayoutPrincipal,
