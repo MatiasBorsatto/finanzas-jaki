@@ -5,19 +5,45 @@ import { formatearMonto, normalizarMonto, aCentavos, deCentavos, hoyLocal } from
 const props = defineProps({
   miembros: { type: Array, required: true }, // [{ usuarioId, nombre }]
   usuarioId: { type: String, default: null },
-  categorias: { type: Array, default: () => [] }
+  categorias: { type: Array, default: () => [] },
+  gasto: { type: Object, default: null } // si viene, el formulario edita ese gasto compartido
 })
-const emit = defineEmits(['guardar'])
+const emit = defineEmits(['guardar', 'cancelar'])
+const editando = !!props.gasto
 
 const hoy = hoyLocal()
-const pagadorId = ref(props.usuarioId ?? props.miembros[0]?.usuarioId ?? '')
-const monto = ref('')
-const fecha = ref(hoy)
-const descripcion = ref('')
-const categoriaId = ref('')
-const modo = ref('igual')
+const g = props.gasto
+const pagadorId = ref(g?.pagadorId ?? props.usuarioId ?? props.miembros[0]?.usuarioId ?? '')
+const monto = ref(g ? g.monto.replace('.', ',') : '')
+const fecha = ref(g?.fecha ?? hoy)
+const descripcion = ref(g?.descripcion ?? '')
+const categoriaId = ref(g?.categoriaId ?? '')
 const personalizados = ref({}) // { [usuarioId]: texto }
 const categoriasPart = ref(Object.fromEntries(props.miembros.map((m) => [m.usuarioId, '']))) // { [usuarioId]: categoriaId | '' }
+
+// En edición: si el reparto es el de partes iguales se abre en ese modo; si no, personalizado.
+function esPartesIguales(gasto) {
+  const n = BigInt(props.miembros.length)
+  if (n === 0n || gasto.participaciones.length !== props.miembros.length) return false
+  const c = aCentavos(gasto.monto)
+  return props.miembros.every((m, i) => {
+    const p = gasto.participaciones.find((x) => x.usuarioId === m.usuarioId)
+    return p && aCentavos(p.monto) === c / n + (BigInt(i) < c % n ? 1n : 0n)
+  })
+}
+const modo = ref(g && !esPartesIguales(g) ? 'personalizado' : 'igual')
+if (g) {
+  for (const p of g.participaciones) {
+    if (p.usuarioId in categoriasPart.value) {
+      // La categoría igual a la del gasto se muestra como "Heredar del gasto".
+      categoriasPart.value[p.usuarioId] = p.categoriaId && p.categoriaId !== g.categoriaId ? p.categoriaId : ''
+    }
+    if (modo.value === 'personalizado') personalizados.value[p.usuarioId] = p.monto.replace('.', ',')
+  }
+  if (modo.value === 'personalizado') {
+    for (const m of props.miembros) personalizados.value[m.usuarioId] ??= ''
+  }
+}
 
 // Base para todos; las propias solo para el usuario actual (las de otros no son visibles).
 const categoriasDe = (uid) =>
@@ -104,7 +130,7 @@ function enviar() {
       </select>
     </label>
     <label>Descripción
-      <input v-model="descripcion" name="descripcion" type="text" maxlength="255" />
+      <input v-model="descripcion" name="descripcion" type="text" maxlength="200" />
     </label>
     <label>Reparto
       <select v-model="modo" name="modo">
@@ -137,7 +163,8 @@ function enviar() {
     </p>
 
     <div class="acciones">
-      <button type="submit" class="primario" :disabled="!puedeEnviar">Guardar gasto compartido</button>
+      <button type="submit" class="primario" :disabled="!puedeEnviar">{{ editando ? 'Guardar cambios' : 'Guardar gasto compartido' }}</button>
+      <button v-if="editando" type="button" data-cancelar @click="emit('cancelar')">Cancelar</button>
     </div>
   </form>
 </template>
@@ -156,7 +183,8 @@ function enviar() {
 .reparto input { width: 140px; margin: 0; }
 .nombre { overflow-wrap: anywhere; min-width: 0; }
 .aviso { grid-column: 1 / -1; margin: 0; color: var(--error); }
-.acciones { grid-column: 1 / -1; }
+.acciones { grid-column: 1 / -1; display: flex; gap: 8px; flex-wrap: wrap; }
+.acciones button:not(.primario) { padding: 10px 16px; border-radius: 8px; border: 1px solid var(--borde); background: var(--superficie); color: var(--texto); cursor: pointer; }
 .primario { padding: 10px 16px; border-radius: 8px; background: var(--primario); color: var(--primario-texto); border: 1px solid var(--primario); font-weight: 600; cursor: pointer; }
 .primario:disabled { opacity: 0.5; cursor: default; }
 </style>

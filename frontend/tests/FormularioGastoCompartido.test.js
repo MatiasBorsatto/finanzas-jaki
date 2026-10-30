@@ -75,3 +75,70 @@ describe('FormularioGastoCompartido', () => {
     expect(sel.element.selectedOptions[0].textContent).toBe('Heredar del gasto')
   })
 })
+
+describe('FormularioGastoCompartido en modo edición', () => {
+  const gasto = {
+    id: 'g1',
+    fecha: '2026-09-15',
+    descripcion: 'Cena',
+    monto: '90.00',
+    categoriaId: 'c-base',
+    pagadorId: 'u2',
+    usuarioId: 'u1',
+    participaciones: [
+      { usuarioId: 'u1', monto: '60.00', categoriaId: 'c-base' },
+      { usuarioId: 'u2', monto: '30.00', categoriaId: 'c-propia' }
+    ]
+  }
+  const categorias = [
+    { id: 'c-base', nombre: 'Comida', usuarioId: null },
+    { id: 'c-propia', nombre: 'Salidas', usuarioId: 'u2' }
+  ]
+
+  it('precarga los campos del gasto y los participantes', () => {
+    const w = mount(FormularioGastoCompartido, { props: { miembros, usuarioId: 'u1', categorias, gasto } })
+    expect(w.find('input[name="monto"]').element.value).toBe('90,00')
+    expect(w.find('input[name="fecha"]').element.value).toBe('2026-09-15')
+    expect(w.find('input[name="descripcion"]').element.value).toBe('Cena')
+    expect(w.find('select[name="pagadorId"]').element.value).toBe('u2')
+    expect(w.find('select[name="categoriaId"]').element.value).toBe('c-base')
+    expect(w.find('select[name="modo"]').element.value).toBe('personalizado')
+    expect(w.find('input[name="monto-u1"]').element.value).toBe('60,00')
+    expect(w.find('input[name="monto-u3"]').element.value).toBe('')
+    expect(w.find('select[name="categoria-u1"]').element.value).toBe('')
+    expect(w.find('button[type="submit"]').text()).toBe('Guardar cambios')
+  })
+
+  it('envía los datos editados como strings de 2 decimales', async () => {
+    const w = mount(FormularioGastoCompartido, { props: { miembros, usuarioId: 'u1', categorias, gasto } })
+    await w.find('form').trigger('submit')
+    const datos = w.emitted('guardar')[0][0]
+    expect(datos).toEqual({
+      pagadorId: 'u2',
+      monto: '90.00',
+      fecha: '2026-09-15',
+      descripcion: 'Cena',
+      categoriaId: 'c-base',
+      participantes: [
+        { usuarioId: 'u1', monto: '60.00' },
+        { usuarioId: 'u2', monto: '30.00', categoriaId: 'c-propia' }
+      ]
+    })
+  })
+
+  it('un gasto repartido en partes iguales abre en modo igual y Cancelar emite cancelar', async () => {
+    const igual = {
+      ...gasto,
+      monto: '100.00',
+      participaciones: [
+        { usuarioId: 'u1', monto: '33.34', categoriaId: null },
+        { usuarioId: 'u2', monto: '33.33', categoriaId: null },
+        { usuarioId: 'u3', monto: '33.33', categoriaId: null }
+      ]
+    }
+    const w = mount(FormularioGastoCompartido, { props: { miembros, usuarioId: 'u1', categorias, gasto: igual } })
+    expect(w.find('select[name="modo"]').element.value).toBe('igual')
+    await w.find('button[data-cancelar]').trigger('click')
+    expect(w.emitted('cancelar')).toHaveLength(1)
+  })
+})

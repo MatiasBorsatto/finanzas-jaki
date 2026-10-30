@@ -5,8 +5,10 @@ import { useSesion } from '../stores/sesion.js'
 import SaldosGrupo from '../components/SaldosGrupo.vue'
 import PagosGrupo from '../components/PagosGrupo.vue'
 import FormularioGastoCompartido from '../components/FormularioGastoCompartido.vue'
+import ListaGastosCompartidos from '../components/ListaGastosCompartidos.vue'
 import {
   obtenerGrupo, listarSaldos, listarPagos, registrarPago, crearGastoCompartido,
+  listarGastosCompartidos, editarGastoCompartido, eliminarGastoCompartido,
   regenerarCodigo, quitarMiembro, cambiarRol, salirDeGrupo, invitar
 } from '../services/grupos.js'
 import { listarCategorias } from '../services/movimientos.js'
@@ -20,6 +22,8 @@ const grupo = ref(null)
 const saldos = ref([])
 const pagos = ref([])
 const categorias = ref([])
+const gastos = ref([])
+const gastoEnEdicion = ref(null)
 const error = ref('')
 const aviso = ref('')
 const mostrarPago = ref(false)
@@ -34,11 +38,18 @@ async function cargarSaldosYPagos() {
   pagos.value = p
 }
 
+async function cargarGastos() {
+  const r = await listarGastosCompartidos(id)
+  gastos.value = r.items
+}
+
+const refrescar = () => Promise.all([cargarSaldosYPagos(), cargarGastos()])
+
 async function cargar() {
   error.value = ''
   try {
     grupo.value = await obtenerGrupo(id)
-    await cargarSaldosYPagos()
+    await refrescar()
   } catch (e) {
     error.value = e.mensaje || 'No se pudo cargar el grupo.'
   }
@@ -62,9 +73,27 @@ async function accion(fn, mensajeError) {
 const guardarGasto = (datos) =>
   accion(async () => {
     await crearGastoCompartido(id, datos)
-    await cargarSaldosYPagos()
+    await refrescar()
     aviso.value = 'Gasto compartido guardado.'
   }, 'No se pudo guardar el gasto.')
+
+const guardarEdicion = (datos) =>
+  accion(async () => {
+    await editarGastoCompartido(id, gastoEnEdicion.value.id, datos)
+    gastoEnEdicion.value = null
+    await refrescar()
+    aviso.value = 'Gasto compartido actualizado.'
+  }, 'No se pudo actualizar el gasto.')
+
+const eliminarGasto = (g) => {
+  if (!window.confirm(`¿Eliminar el gasto "${g.descripcion || 'sin descripción'}"? Se recalcularán los saldos.`)) return
+  return accion(async () => {
+    await eliminarGastoCompartido(id, g.id)
+    if (gastoEnEdicion.value?.id === g.id) gastoEnEdicion.value = null
+    await refrescar()
+    aviso.value = 'Gasto compartido eliminado.'
+  }, 'No se pudo eliminar el gasto.')
+}
 
 const guardarPago = (datos) =>
   accion(async () => {
@@ -160,6 +189,27 @@ onMounted(cargar)
           :usuario-id="usuarioId"
           :categorias="categorias"
           @guardar="guardarGasto"
+        />
+      </div>
+
+      <div class="bloque">
+        <h2>Gastos compartidos</h2>
+        <FormularioGastoCompartido
+          v-if="gastoEnEdicion"
+          :key="gastoEnEdicion.id"
+          :miembros="grupo.miembros"
+          :usuario-id="usuarioId"
+          :categorias="categorias"
+          :gasto="gastoEnEdicion"
+          @guardar="guardarEdicion"
+          @cancelar="gastoEnEdicion = null"
+        />
+        <ListaGastosCompartidos
+          :gastos="gastos"
+          :miembros="grupo.miembros"
+          :usuario-id="usuarioId"
+          @editar="(g) => (gastoEnEdicion = g)"
+          @eliminar="eliminarGasto"
         />
       </div>
 
