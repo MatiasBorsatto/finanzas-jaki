@@ -82,7 +82,7 @@ async function solicitarRecuperacion(correo) {
     .then(() =>
       email.enviarEmail({
         para: u.email,
-        asunto: 'Recuperar contraseña - Finanzas Jaki',
+        asunto: 'Recuperar contraseña - Platita',
         texto: `Para restablecer tu contraseña ingresá a: ${base}/restablecer?token=${token}\nEl enlace vence en una hora y solo puede usarse una vez.`,
       })
     )

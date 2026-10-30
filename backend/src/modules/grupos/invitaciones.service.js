@@ -51,7 +51,7 @@ async function invitar(adminId, grupoId, correo) {
     .then(() =>
       email.enviarEmail({
         para: destino,
-        asunto: `Invitación al grupo ${grupo.nombre} - Finanzas Jaki`,
+        asunto: `Invitación al grupo ${grupo.nombre} - Platita`,
         texto: `Te invitaron al grupo "${grupo.nombre}". Para aceptar ingresá a: ${base}/invitaciones/aceptar?token=${token}\nEl enlace vence en 7 días y solo puede usarse una vez.`,
       })
     )

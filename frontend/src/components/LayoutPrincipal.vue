@@ -23,7 +23,7 @@ async function salir() {
 <template>
   <div class="layout">
     <nav class="navegacion" aria-label="Principal">
-      <strong class="marca">Finanzas Jaki</strong>
+      <strong class="marca">Platita</strong>
       <CampanaNotificaciones />
       <RouterLink v-for="e in enlaces" :key="e.to" :to="e.to" class="enlace">{{ e.texto }}</RouterLink>
       <RouterLink to="/perfil" class="enlace solo-escritorio">Perfil</RouterLink>
