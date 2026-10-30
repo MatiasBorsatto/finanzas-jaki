@@ -1,6 +1,6 @@
 const { Op } = require('sequelize');
 const { sequelize } = require('../../db/sequelize');
-const { Movimiento, Categoria } = require('../../db/models');
+const { Movimiento, Categoria, AporteMeta } = require('../../db/models');
 const metasService = require('../metas/metas.service');
 const { ErrorNoEncontrado, ErrorValidacion } = require('../../utils/errores');
 const { diaValido } = require('../../utils/fechas');
@@ -36,9 +36,21 @@ async function crearMovimiento(usuarioId, datos) {
 async function editarMovimiento(usuarioId, id, datos) {
   const mov = await obtenerPropio(usuarioId, id);
   await verificarCategoria(usuarioId, datos.categoriaId);
-  Object.assign(mov, datos);
-  await mov.save();
-  return mov;
+  if (!mov.metaId) {
+    Object.assign(mov, datos);
+    await mov.save();
+    return mov;
+  }
+  // Con meta, el aporte vinculado se actualiza en la misma transacción (gasto retira, ingreso suma).
+  return sequelize.transaction(async (transaction) => {
+    Object.assign(mov, datos);
+    await mov.save({ transaction });
+    await AporteMeta.update(
+      { monto: mov.tipo === 'ingreso' ? mov.monto : `-${mov.monto}` },
+      { where: { movimientoId: mov.id }, transaction }
+    );
+    return mov;
+  });
 }
 
 async function eliminarMovimiento(usuarioId, id) {

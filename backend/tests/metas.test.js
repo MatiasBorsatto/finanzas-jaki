@@ -168,6 +168,22 @@ describe('movimientos asociados a una meta', () => {
     expect(lista.acumulado).toBe('2499.50');
   });
 
+  test('editar el monto de un ingreso con meta actualiza su aporte y el acumulado', async () => {
+    const meta = (await crearMeta(agentA)).body;
+    const mov = await agentA
+      .post('/api/movimientos')
+      .send({ tipo: 'ingreso', monto: '3000.00', fecha: '2026-10-05', metaId: meta.id });
+    const res = await agentA.patch(`/api/movimientos/${mov.body.id}`).send({ monto: '1200.00' });
+    expect(res.status).toBe(200);
+    const aporte = await AporteMeta.findOne({ where: { movimientoId: mov.body.id } });
+    expect(aporte.monto).toBe('1200.00');
+    const lista = (await agentA.get('/api/metas')).body.find((m) => m.id === meta.id);
+    expect(lista.acumulado).toBe('1200.00');
+    await agentA.patch(`/api/movimientos/${mov.body.id}`).send({ tipo: 'gasto' });
+    const lista2 = (await agentA.get('/api/metas')).body.find((m) => m.id === meta.id);
+    expect(lista2.acumulado).toBe('-1200.00');
+  });
+
   test('un movimiento con la meta de otro usuario da 404 y no crea nada', async () => {
     const meta = (await crearMeta(agentA)).body;
     const antes = await Movimiento.count({ where: { descripcion: `ajena-${sufijo}` } });
