@@ -51,10 +51,10 @@ async function salir() {
   .layout { flex-direction: column; }
   .marca { display: none; }
   .navegacion {
-    position: fixed; bottom: 0; left: 0; right: 0; width: 100%; flex-direction: row;
-    justify-content: space-around; padding: 6px; border-right: 0; border-top: 1px solid var(--borde); z-index: 10;
+    position: fixed; bottom: 0; left: 0; right: 0; width: 100%; flex-direction: row; align-items: center;
+    gap: 0; padding: 6px 0; border-right: 0; border-top: 1px solid var(--borde); z-index: 10;
   }
-  .enlace { flex: 1; text-align: center; padding: 10px 4px; font-size: 0.85rem; }
+  .enlace { flex: 1 0 auto; text-align: center; padding: 10px 1px; font-size: 0.68rem; white-space: nowrap; }
   .salir { margin-top: 0; }
   .contenido { padding: 16px 16px 80px; }
 }
