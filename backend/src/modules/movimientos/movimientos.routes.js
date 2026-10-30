@@ -1,10 +1,12 @@
 const { Router } = require('express');
 const { autenticar } = require('../../middlewares/autenticar');
+const { validarIdParam } = require('../../middlewares/validarIdParam');
 const service = require('./movimientos.service');
 const { validarCrear, validarEditar, validarFiltros } = require('./movimientos.validation');
 
 const router = Router();
 router.use(autenticar);
+router.param('id', validarIdParam);
 
 router.get('/', async (req, res) => {
   const filtros = validarFiltros(req.query);

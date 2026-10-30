@@ -92,3 +92,10 @@ test('archivar una propia la saca del listado', async () => {
   expect(res.body.map((x) => x.id)).not.toContain(c.body.id);
   expect(await Categoria.findByPk(c.body.id)).not.toBeNull();
 });
+
+describe('ids con formato inválido', () => {
+  test('PATCH y DELETE con un id que no es UUID dan 404', async () => {
+    expect((await agentA.patch('/api/categorias/no-es-uuid').send({ nombre: 'X' })).status).toBe(404);
+    expect((await agentA.delete('/api/categorias/no-es-uuid')).status).toBe(404);
+  });
+});

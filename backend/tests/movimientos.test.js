@@ -132,3 +132,10 @@ describe('listado', () => {
     expect((await agentA.get('/api/movimientos?page=0')).status).toBe(400);
   });
 });
+
+describe('ids con formato inválido', () => {
+  test('PATCH y DELETE con un id que no es UUID dan 404', async () => {
+    expect((await agentA.patch('/api/movimientos/no-es-uuid').send({ monto: '10' })).status).toBe(404);
+    expect((await agentA.delete('/api/movimientos/no-es-uuid')).status).toBe(404);
+  });
+});
