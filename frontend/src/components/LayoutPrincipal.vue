@@ -26,6 +26,7 @@ async function salir() {
       <strong class="marca">Finanzas Jaki</strong>
       <CampanaNotificaciones />
       <RouterLink v-for="e in enlaces" :key="e.to" :to="e.to" class="enlace">{{ e.texto }}</RouterLink>
+      <RouterLink to="/perfil" class="enlace solo-escritorio">Perfil</RouterLink>
       <button class="enlace salir" type="button" @click="salir">Salir</button>
     </nav>
     <main class="contenido"><RouterView /></main>
@@ -44,7 +45,8 @@ async function salir() {
   background: none; border: 0; text-align: left; cursor: pointer;
 }
 .enlace.router-link-active { background: var(--primario); color: var(--primario-texto); }
-.salir { margin-top: auto; color: var(--texto-suave); font: inherit; }
+.solo-escritorio { margin-top: auto; }
+.salir { margin-top: 0; color: var(--texto-suave); font: inherit; }
 .contenido { flex: 1; min-width: 0; padding: 24px; }
 
 @media (max-width: 767px) {
@@ -59,7 +61,7 @@ async function salir() {
     display: flex; align-items: center; justify-content: center; min-height: 44px;
     padding: 6px 4px; font-size: 0.8rem; text-align: center; overflow-wrap: anywhere;
   }
-  .salir { margin-top: 0; }
+  .solo-escritorio { display: none; }
   .contenido { padding: 16px 16px 120px; }
 }
 </style>
