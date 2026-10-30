@@ -7,6 +7,7 @@ const ParticipacionGasto = sequelize.define(
     id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
     movimientoId: { type: DataTypes.UUID, allowNull: false },
     usuarioId: { type: DataTypes.UUID, allowNull: false },
+    categoriaId: { type: DataTypes.UUID, allowNull: true },
     monto: { type: DataTypes.DECIMAL(12, 2), allowNull: false },
   },
   {

@@ -80,6 +80,7 @@ function validarGastoCompartido(body = {}) {
     datos.participantes = body.participantes.map((p) => ({
       usuarioId: validarUuid(p?.usuarioId, 'usuarioId'),
       monto: validarMonto(p?.monto),
+      categoriaId: p?.categoriaId ? validarUuid(p.categoriaId, 'categoriaId') : null,
     }));
   }
   return datos;

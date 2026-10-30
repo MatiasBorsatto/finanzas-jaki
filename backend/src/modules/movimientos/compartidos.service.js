@@ -16,7 +16,7 @@ async function calcularParticipaciones(grupoId, monto, participantes) {
       order: [['createdAt', 'ASC'], ['id', 'ASC']],
     });
     const partes = dividirEnPartes(monto, miembros.length);
-    return miembros.map((m, i) => ({ usuarioId: m.usuarioId, monto: partes[i] }));
+    return miembros.map((m, i) => ({ usuarioId: m.usuarioId, monto: partes[i], categoriaId: null }));
   }
   const ids = participantes.map((p) => p.usuarioId);
   if (new Set(ids).size !== ids.length) throw new ErrorValidacion('Hay participantes repetidos');
@@ -39,6 +39,8 @@ async function crearGastoCompartido(
   if (!(await esMiembro(grupoId, pagadorId))) throw new ErrorValidacion('El pagador debe ser miembro del grupo');
   await verificarCategoria(usuarioId, categoriaId);
   const partes = await calcularParticipaciones(grupoId, monto, participantes);
+  // Cada participante puede imputar su parte a una categoría propia (o base); por defecto, la del gasto.
+  for (const p of partes) await verificarCategoria(p.usuarioId, p.categoriaId);
 
   return sequelize.transaction(async (transaction) => {
     const mov = await Movimiento.create(
@@ -46,7 +48,7 @@ async function crearGastoCompartido(
       { transaction }
     );
     const filas = await ParticipacionGasto.bulkCreate(
-      partes.map((p) => ({ movimientoId: mov.id, usuarioId: p.usuarioId, monto: p.monto })),
+      partes.map((p) => ({ movimientoId: mov.id, usuarioId: p.usuarioId, monto: p.monto, categoriaId: p.categoriaId || categoriaId })),
       { transaction }
     );
     return { ...mov.toJSON(), participaciones: filas.map((f) => f.toJSON()) };

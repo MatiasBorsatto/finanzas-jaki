@@ -9,7 +9,7 @@ const { registrarAlertaPresupuesto } = require('../notificaciones/notificaciones
 const REGLAS_PERMITIDAS = ['solo_personal', 'con_compartidos'];
 
 // Gastos personales de la categoría y mes; con_compartidos suma además la parte
-// (ParticipacionGasto) del usuario en gastos compartidos de todos sus grupos.
+// (ParticipacionGasto, con su propia categoría) del usuario en gastos compartidos de todos sus grupos.
 // Se suman solo las participaciones, nunca el monto del movimiento, para no contar dos veces.
 async function consumoPresupuesto(usuarioId, categoriaId, mes, regla) {
   const fecha = { [Op.between]: rangoDelMes(mes) };
@@ -20,13 +20,13 @@ async function consumoPresupuesto(usuarioId, categoriaId, mes, regla) {
   const montos = personales.map((g) => g.monto);
   if (regla === 'con_compartidos') {
     const partes = await ParticipacionGasto.findAll({
-      where: { usuarioId },
+      where: { usuarioId, categoriaId },
       attributes: ['monto'],
       include: [{
         model: Movimiento,
         required: true,
         attributes: [],
-        where: { tipo: 'gasto', alcance: 'compartido', fecha, categoriaId },
+        where: { tipo: 'gasto', alcance: 'compartido', fecha },
       }],
     });
     montos.push(...partes.map((p) => p.monto));
