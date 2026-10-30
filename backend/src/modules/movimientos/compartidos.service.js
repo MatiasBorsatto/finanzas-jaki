@@ -1,5 +1,5 @@
 const { sequelize } = require('../../db/sequelize');
-const { Movimiento, MiembroGrupo, ParticipacionGasto } = require('../../db/models');
+const { Movimiento, Categoria, MiembroGrupo, ParticipacionGasto } = require('../../db/models');
 const { dividirEnPartes, sumar, aCentavos } = require('../../utils/dinero');
 const { ErrorValidacion } = require('../../utils/errores');
 const { verificarCategoria } = require('./movimientos.service');
@@ -39,6 +39,12 @@ async function crearGastoCompartido(
   if (!(await esMiembro(grupoId, pagadorId))) throw new ErrorValidacion('El pagador debe ser miembro del grupo');
   await verificarCategoria(usuarioId, categoriaId);
   const partes = await calcularParticipaciones(grupoId, monto, participantes);
+  // Sin categoría explícita se hereda la del gasto solo si es base (o si el participante es quien
+  // la creó); una categoría propia del creador no existe para los demás, que la eligen después.
+  const esBase = categoriaId
+    ? Boolean(await Categoria.findOne({ where: { id: categoriaId, usuarioId: null } }))
+    : false;
+  const heredada = (uid) => (esBase || uid === usuarioId ? categoriaId : null);
   // Cada participante puede imputar su parte a una categoría propia (o base); por defecto, la del gasto.
   for (const p of partes) await verificarCategoria(p.usuarioId, p.categoriaId);
 
@@ -48,7 +54,7 @@ async function crearGastoCompartido(
       { transaction }
     );
     const filas = await ParticipacionGasto.bulkCreate(
-      partes.map((p) => ({ movimientoId: mov.id, usuarioId: p.usuarioId, monto: p.monto, categoriaId: p.categoriaId || categoriaId })),
+      partes.map((p) => ({ movimientoId: mov.id, usuarioId: p.usuarioId, monto: p.monto, categoriaId: p.categoriaId || heredada(p.usuarioId) })),
       { transaction }
     );
     return { ...mov.toJSON(), participaciones: filas.map((f) => f.toJSON()) };

@@ -138,3 +138,43 @@ describe('categoría por participante', () => {
     expect(await consumo(agentA, catComida)).toBe(antes);
   });
 });
+
+describe('herencia de categoría por defecto', () => {
+  let base;
+  const partesDe = async (movimientoId) => {
+    const filas = await ParticipacionGasto.findAll({ where: { movimientoId } });
+    return Object.fromEntries(filas.map((f) => [f.usuarioId, f.categoriaId]));
+  };
+  const gasto = (datos) =>
+    agentA.post(`/api/grupos/${grupos[1]}/gastos`).send({ pagadorId: ids.a, monto: '40.00', fecha: '2026-08-05', ...datos });
+
+  beforeAll(async () => {
+    base = await Categoria.create({ nombre: `Base presc ${sufijo}`, usuarioId: null });
+  });
+  afterAll(async () => {
+    const movs = await Movimiento.findAll({ where: { usuarioId: ids.a, fecha: '2026-08-05' } });
+    await ParticipacionGasto.destroy({ where: { movimientoId: movs.map((m) => m.id) } });
+    await Movimiento.destroy({ where: { id: movs.map((m) => m.id) } });
+    await Categoria.destroy({ where: { id: base.id } });
+  });
+
+  test('categoría base: todos los participantes la heredan', async () => {
+    const res = await gasto({ categoriaId: base.id });
+    expect(res.status).toBe(201);
+    expect(await partesDe(res.body.id)).toEqual({ [ids.a]: base.id, [ids.b]: base.id });
+  });
+
+  test('categoría propia del creador: los demás quedan en null', async () => {
+    const res = await gasto({ categoriaId: catComida });
+    expect(await partesDe(res.body.id)).toEqual({ [ids.a]: catComida, [ids.b]: null });
+  });
+
+  test('la categoría explícita del participante gana', async () => {
+    const catB = (await agentB.post('/api/categorias').send({ nombre: 'Explícita' })).body.id;
+    const res = await gasto({
+      categoriaId: catComida,
+      participantes: [{ usuarioId: ids.a, monto: '20.00' }, { usuarioId: ids.b, monto: '20.00', categoriaId: catB }],
+    });
+    expect(await partesDe(res.body.id)).toEqual({ [ids.a]: catComida, [ids.b]: catB });
+  });
+});
