@@ -103,7 +103,7 @@ onMounted(cargar)
   .contador { top: 4px; left: 50%; margin-left: 6px; }
 }
 .panel {
-  position: fixed; width: 300px; max-height: min(420px, 70vh); overflow: auto; z-index: 30;
+  position: fixed; color: var(--texto); width: 300px; max-height: min(420px, 70vh); overflow: auto; z-index: 30;
   background: var(--superficie); border: 1px solid var(--borde); border-radius: 8px; padding: 8px;
 }
 @media (max-width: 767px) { .panel { left: 12px; right: 12px; bottom: 104px; width: auto; max-height: 50vh; } }

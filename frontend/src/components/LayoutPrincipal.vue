@@ -6,6 +6,8 @@ import { entrarPagina, salirPagina } from '../motion/movimiento.js'
 
 const router = useRouter()
 const sesion = useSesion()
+// Ruta pública (carpeta public/): dinámica para que Vite no la convierta en import.
+const logoUrl = '/logo.svg'
 
 // Trazos SVG de 24x24 (estilo línea). Cada elemento del arreglo es un trazo.
 const iconos = {
@@ -38,7 +40,7 @@ async function salir() {
   <div class="layout">
     <nav class="navegacion" aria-label="Principal">
       <div class="marca">
-        <span class="logo" aria-hidden="true">P</span>
+        <img class="logo" :src="logoUrl" alt="" width="34" height="34" />
         <strong>Platita</strong>
       </div>
       <CampanaNotificaciones />
@@ -69,17 +71,14 @@ async function salir() {
 .layout { display: flex; min-height: 100vh; }
 
 .navegacion {
-  position: sticky; top: 0; align-self: flex-start;
+  position: sticky; top: 0; z-index: 20; align-self: flex-start;
   display: flex; flex-direction: column; gap: 4px; width: 232px; height: 100dvh; padding: 20px 14px;
   background: var(--sidebar-fondo); color: var(--sidebar-texto);
   box-shadow: 4px 0 24px rgba(8, 12, 30, 0.18);
 }
 
 .marca { display: flex; align-items: center; gap: 10px; margin: 4px 8px 22px; color: #ffffff; font-size: 1.1rem; }
-.logo {
-  display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px;
-  background: var(--primario); color: var(--primario-texto); font-weight: 800;
-}
+.logo { display: block; width: 34px; height: 34px; flex: none; }
 
 .enlace {
   display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 10px 12px;
