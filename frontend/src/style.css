@@ -33,7 +33,7 @@ main.contenido h1::after {
   width: 48px;
   height: 4px;
   border-radius: 2px;
-  background: var(--gradiente-primario);
+  background: var(--primario);
 }
 
 /* Campos de formulario coherentes en toda la app */
@@ -67,7 +67,7 @@ input:focus, select:focus, textarea:focus {
   position: absolute;
   inset: 0 0 auto 0;
   height: 5px;
-  background: var(--gradiente-primario);
+  background: var(--primario);
 }
 
 .tarjeta-acceso h1 { margin-top: 0; font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em; }
@@ -79,8 +79,7 @@ input:focus, select:focus, textarea:focus {
 }
 .tarjeta-acceso button {
   width: 100%; padding: 12px; border: 0; border-radius: var(--radio-chico); cursor: pointer;
-  background: var(--gradiente-primario); color: var(--primario-texto); font-weight: 700;
-  box-shadow: 0 6px 16px rgba(10, 159, 122, 0.28);
+  background: var(--primario); color: var(--primario-texto); font-weight: 700;
 }
 .tarjeta-acceso button:hover:not(:disabled) { filter: brightness(1.05); }
 .tarjeta-acceso button:disabled { opacity: 0.6; cursor: default; box-shadow: none; }

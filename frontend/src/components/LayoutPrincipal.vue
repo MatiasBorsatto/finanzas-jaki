@@ -70,7 +70,7 @@ async function salir() {
 
 .navegacion {
   position: sticky; top: 0; align-self: flex-start;
-  display: flex; flex-direction: column; gap: 4px; width: 232px; height: 100vh; padding: 20px 14px;
+  display: flex; flex-direction: column; gap: 4px; width: 232px; height: 100dvh; padding: 20px 14px;
   background: var(--sidebar-fondo); color: var(--sidebar-texto);
   box-shadow: 4px 0 24px rgba(8, 12, 30, 0.18);
 }
@@ -78,8 +78,7 @@ async function salir() {
 .marca { display: flex; align-items: center; gap: 10px; margin: 4px 8px 22px; color: #ffffff; font-size: 1.1rem; }
 .logo {
   display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px;
-  background: var(--gradiente-primario); color: #04201a; font-weight: 800;
-  box-shadow: 0 6px 16px rgba(20, 184, 166, 0.35);
+  background: var(--primario); color: #04201a; font-weight: 800;
 }
 
 .enlace {
@@ -99,6 +98,11 @@ async function salir() {
 .salir:hover { color: #fda4af; }
 
 .contenido { flex: 1; min-width: 0; padding: 32px 36px; }
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .navegacion { width: 196px; padding: 16px 10px; }
+  .contenido { padding: 24px; }
+}
 
 @media (max-width: 767px) {
   .layout { flex-direction: column; }
