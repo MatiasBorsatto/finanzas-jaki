@@ -7,6 +7,7 @@ const notificaciones = ref([])
 const abierta = ref(false)
 const error = ref('')
 const boton = ref(null)
+const posicion = ref({})
 
 const noLeidas = computed(() => notificaciones.value.filter((n) => !n.leida).length)
 
@@ -27,6 +28,17 @@ async function marcar(n) {
   }
 }
 
+// El panel se muestra fijo, junto al botón, para no tapar el contenido. En celular queda sobre la barra inferior.
+function alternar() {
+  if (!abierta.value) {
+    const r = boton.value.getBoundingClientRect()
+    posicion.value = window.innerWidth >= 768
+      ? { left: `${r.right + 12}px`, top: `${Math.max(12, r.top - 8)}px` }
+      : {}
+  }
+  abierta.value = !abierta.value
+}
+
 function cerrar() {
   abierta.value = false
   boton.value?.focus()
@@ -44,7 +56,7 @@ onMounted(cargar)
       :aria-expanded="abierta"
       aria-controls="panel-notificaciones"
       :aria-label="`Notificaciones, ${noLeidas} sin leer`"
-      @click="abierta = !abierta"
+      @click="alternar"
     >
       <svg class="icono" viewBox="0 0 24 24" aria-hidden="true">
         <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
@@ -54,7 +66,7 @@ onMounted(cargar)
       <span v-if="noLeidas > 0" class="contador" data-testid="contador">{{ noLeidas }}</span>
     </button>
     <Transition :css="false" @enter="abrirPanel" @leave="cerrarPanel">
-      <div v-if="abierta" id="panel-notificaciones" class="panel" role="region" aria-label="Notificaciones" @keydown.esc="cerrar">
+      <div v-if="abierta" id="panel-notificaciones" :style="posicion" class="panel" role="region" aria-label="Notificaciones" @keydown.esc="cerrar">
         <p v-if="error" class="error" role="alert">{{ error }}</p>
         <p v-if="notificaciones.length === 0" class="vacio">No tenés notificaciones.</p>
         <ul v-else>
@@ -91,10 +103,10 @@ onMounted(cargar)
   .contador { top: 4px; left: 50%; margin-left: 6px; }
 }
 .panel {
-  position: absolute; left: 0; top: 100%; width: 280px; max-height: 320px; overflow: auto; z-index: 20;
+  position: fixed; width: 300px; max-height: min(420px, 70vh); overflow: auto; z-index: 30;
   background: var(--superficie); border: 1px solid var(--borde); border-radius: 8px; padding: 8px;
 }
-@media (max-width: 767px) { .panel { top: auto; bottom: calc(100% + 12px); width: min(280px, calc(100vw - 16px)); } }
+@media (max-width: 767px) { .panel { left: 12px; right: 12px; bottom: 104px; width: auto; max-height: 50vh; } }
 ul { list-style: none; margin: 0; padding: 0; }
 li { display: flex; flex-direction: column; gap: 4px; padding: 8px; border-bottom: 1px solid var(--borde); }
 li.leida { color: var(--texto-suave); }
