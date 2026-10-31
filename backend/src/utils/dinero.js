@@ -2,6 +2,9 @@ const { ErrorValidacion } = require('./errores');
 
 // Todo el cálculo se hace en centavos enteros (BigInt); nunca con floats.
 
+// Máximo que admite la columna DECIMAL(12,2) de los montos: 9999999999.99.
+const MAXIMO_CENTAVOS = 999999999999n;
+
 function aCentavos(monto) {
   const m = /^(\d+)(?:\.(\d{1,2}))?$/.exec(String(monto).trim());
   if (!m) throw new ErrorValidacion('Monto inválido');
@@ -26,6 +29,7 @@ function validarMonto(valor) {
   }
   const centavos = aCentavos(texto);
   if (centavos <= 0n) throw new ErrorValidacion('El monto debe ser mayor que 0');
+  if (centavos > MAXIMO_CENTAVOS) throw new ErrorValidacion('El monto supera el máximo permitido (9999999999.99)');
   return deCentavos(centavos);
 }
 

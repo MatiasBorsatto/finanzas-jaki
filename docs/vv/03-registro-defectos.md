@@ -18,7 +18,7 @@ Severidad: crítica (pérdida o corrupción de datos), alta (funcionalidad princ
 | Evidencia | Prueba de integración temporal, salida: `STATUS 500`. Caso CN-12 de `01-casos-de-prueba.md`. |
 | Severidad | Media. No hay pérdida de datos, pero el error no es controlado. |
 | Prioridad | Media. La interfaz impide ingresar ese valor, así que el usuario no lo ve normalmente. |
-| Estado | Abierto. Corrección propuesta: agregar a `validarMonto` un tope de 9999999999.99 y responder 400. |
+| Estado | Cerrado. `validarMonto` rechaza montos mayores que 9999999999.99 con error 400. Cubierto por `tests/utils/dinero.test.js` y `tests/monto-maximo.test.js`. |
 
 ## Defectos detectados y corregidos durante el desarrollo
 

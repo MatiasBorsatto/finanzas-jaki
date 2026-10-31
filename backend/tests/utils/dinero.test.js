@@ -23,6 +23,11 @@ test('validarMonto rechaza valores no numéricos', () => {
   expect(() => validarMonto('')).toThrow(ErrorValidacion);
 });
 
+test('validarMonto acepta el máximo de la columna y rechaza un monto que la supera', () => {
+  expect(validarMonto('9999999999.99')).toBe('9999999999.99');
+  expect(() => validarMonto('10000000000.00')).toThrow(ErrorValidacion);
+});
+
 test('validarMonto acepta números sin error de punto flotante', () => {
   expect(validarMonto(10)).toBe('10.00');
   expect(validarMonto('0.01')).toBe('0.01');

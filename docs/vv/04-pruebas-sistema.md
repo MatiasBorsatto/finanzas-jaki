@@ -12,7 +12,7 @@ Responsable: Matias Borsatto. Ejecutadas sobre el sistema completo: backend y fr
 | ST-04 | Doble envío | Doble clic en "Guardar" | Un solo movimiento | Un solo movimiento | Aprobado |
 | ST-05 | Confirmación de borrado | Presionar "Eliminar" | Diálogo propio, foco en "Cancelar", cierre con Escape | Diálogo propio con foco en "Cancelar" | Aprobado |
 | ST-06 | Notificaciones | Abrir el panel de la campana | Panel junto al botón, sin tapar el contenido | Panel por encima del contenido, texto legible | Aprobado |
-| ST-07 | Monto que supera la columna | Enviar 10000000000.00 por la API | 400 | 500 | **Fallido** (D-01) |
+| ST-07 | Monto que supera la columna | Enviar 10000000000.00 por la API | 400 | 500 antes de la corrección; 400 después (D-01 cerrado) | Aprobado tras corrección |
 | ST-08 | Diseño, escritorio 1024 px | Recorrer las 7 vistas y revisar desbordes | Sin desborde horizontal | Sin desborde en las 7 vistas | Aprobado |
 | ST-09 | Diseño, celular 375 px | Recorrer las 7 vistas y revisar campos y botones | Campos y botones dentro de la pantalla | Sin desborde; barra inferior fija abajo | Aprobado |
 | ST-10 | Diseño, tablet 768 px | Revisar barra lateral y tarjetas de estadísticas | Barra más angosta; las 4 tarjetas en una fila | Verificado | Aprobado |
