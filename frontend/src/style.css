@@ -149,3 +149,8 @@ body.procesando button[type="submit"]::after {
   color: var(--primario-texto); animation: giro-boton 0.7s linear infinite;
 }
 @keyframes giro-boton { to { transform: rotate(360deg); } }
+
+/* Formularios: campos de alto uniforme y botones alineados a la izquierda */
+input[type="checkbox"] { width: 20px; height: 20px; min-height: auto; margin: 0; flex: none; accent-color: var(--primario); }
+form.panel input:not([type="checkbox"]), form.panel select { height: 46px; }
+form.panel > button[type="submit"] { justify-self: start; min-width: 200px; }

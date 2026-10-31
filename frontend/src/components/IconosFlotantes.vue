@@ -16,12 +16,12 @@ const trazos = {
 
 // Posición en porcentaje del área de contenido, tamaño en px y velocidad de flotación.
 const piezas = [
-  { icono: 'moneda', x: '4%', y: '14%', tam: 46, duracion: 6.5 },
-  { icono: 'billete', x: '88%', y: '10%', tam: 56, duracion: 7.5 },
-  { icono: 'grafico', x: '92%', y: '58%', tam: 44, duracion: 6 },
-  { icono: 'cartera', x: '6%', y: '72%', tam: 50, duracion: 8 },
-  { icono: 'objetivo', x: '52%', y: '90%', tam: 40, duracion: 7 },
-  { icono: 'tarjeta', x: '74%', y: '30%', tam: 42, duracion: 6.8 }
+  { icono: 'moneda', x: '80%', y: '16%', tam: 44, duracion: 6.5 },
+  { icono: 'billete', x: '84%', y: '8%', tam: 52, duracion: 7.5 },
+  { icono: 'grafico', x: '90%', y: '60%', tam: 40, duracion: 6 },
+  { icono: 'cartera', x: '77%', y: '82%', tam: 46, duracion: 8 },
+  { icono: 'objetivo', x: '88%', y: '90%', tam: 36, duracion: 7 },
+  { icono: 'tarjeta', x: '75%', y: '38%', tam: 40, duracion: 6.8 }
 ]
 
 const raiz = ref(null)
@@ -36,7 +36,7 @@ onMounted(() => {
         el,
         {
           transform: ['translateY(0px) rotate(0deg)', 'translateY(-16px) rotate(7deg)', 'translateY(0px) rotate(0deg)'],
-          opacity: [0.5, 0.9, 0.5]
+          opacity: [0.14, 0.3, 0.14]
         },
         { duration: d, repeat: Infinity, ease: 'easeInOut', delay: i * 0.4 }
       )

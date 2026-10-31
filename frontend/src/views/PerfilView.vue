@@ -159,7 +159,10 @@ onMounted(async () => {
 .perfil section { margin-bottom: 24px; }
 .perfil form label { display: block; margin-bottom: 12px; }
 .perfil form input { display: block; width: 100%; }
-.opcion { display: flex; gap: 8px; align-items: flex-start; }
-.opcion input { width: auto; margin-top: 4px; }
+.opcion {
+  display: flex; gap: 12px; align-items: center; max-width: 560px; padding: 14px 16px; cursor: pointer;
+  background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio-chico);
+}
+.opcion input { flex: none; margin: 0; }
 .resumen { color: var(--texto-suave); }
 </style>
