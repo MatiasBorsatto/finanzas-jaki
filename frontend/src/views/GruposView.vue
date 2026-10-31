@@ -1,4 +1,5 @@
 <script setup>
+import CargandoIndicador from '../components/CargandoIndicador.vue'
 import { ref, onMounted } from 'vue'
 import { listarGrupos, crearGrupo, unirseAGrupo } from '../services/grupos.js'
 
@@ -58,18 +59,18 @@ onMounted(cargar)
     <h1>Grupos</h1>
     <div v-if="error" class="error-form" role="alert">{{ error }}</div>
 
-    <form class="form-grid" novalidate @submit.prevent="crear">
+    <form class="form-grid panel" novalidate @submit.prevent="crear">
       <label>Nombre del grupo <input v-model="nombre" type="text" maxlength="100" /></label>
       <button type="submit" class="primario">Crear grupo</button>
     </form>
-    <form class="form-grid" novalidate @submit.prevent="unirse">
+    <form class="form-grid panel" novalidate @submit.prevent="unirse">
       <label>Código de invitación <input v-model="codigo" type="text" maxlength="16" autocomplete="off" /></label>
       <button type="submit">Unirme</button>
     </form>
 
-    <p v-if="cargando">Cargando…</p>
+    <CargandoIndicador v-if="cargando" variante="esqueleto" />
     <p v-else-if="grupos.length === 0">Todavía no estás en ningún grupo.</p>
-    <ul class="lista">
+    <ul class="lista panel">
       <li v-for="g in grupos" :key="g.id" class="item">
         <RouterLink :to="`/grupos/${g.id}`">{{ g.nombre }}</RouterLink>
         <span class="rol">{{ g.rol === 'admin' ? 'Administrador' : 'Miembro' }}</span>

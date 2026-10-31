@@ -1,4 +1,5 @@
 <script setup>
+import CargandoIndicador from '../components/CargandoIndicador.vue'
 import { ref, onMounted } from 'vue'
 import { useSesion } from '../stores/sesion.js'
 import { obtenerPerfil, actualizarPerfil } from '../services/usuario.js'
@@ -96,7 +97,7 @@ onMounted(async () => {
 <template>
   <section class="perfil">
     <h1>Mi perfil</h1>
-    <p v-if="cargando">Cargando...</p>
+    <CargandoIndicador v-if="cargando" />
     <p v-else-if="errorCarga" class="error-form" role="alert">{{ errorCarga }}</p>
     <template v-else-if="perfil">
       <p class="resumen">{{ perfil.nombre }} · {{ perfil.email }}</p>
@@ -119,7 +120,7 @@ onMounted(async () => {
 
       <section aria-labelledby="titulo-datos">
         <h2 id="titulo-datos">Datos personales</h2>
-        <form aria-label="Datos personales" @submit.prevent="guardarDatos">
+        <form class="panel" aria-label="Datos personales" @submit.prevent="guardarDatos">
           <label>Nombre
             <input v-model="nombre" name="nombre" type="text" autocomplete="name" required />
           </label>
@@ -134,7 +135,7 @@ onMounted(async () => {
 
       <section aria-labelledby="titulo-password">
         <h2 id="titulo-password">Contraseña</h2>
-        <form aria-label="Cambiar contraseña" @submit.prevent="guardarPassword">
+        <form class="panel" aria-label="Cambiar contraseña" @submit.prevent="guardarPassword">
           <label>Contraseña actual
             <input v-model="passwordActual" name="passwordActual" type="password" autocomplete="current-password" required />
           </label>

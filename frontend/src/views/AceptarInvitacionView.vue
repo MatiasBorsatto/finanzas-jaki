@@ -1,4 +1,5 @@
 <script setup>
+import CargandoIndicador from '../components/CargandoIndicador.vue'
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { aceptarInvitacion } from '../services/grupos.js'
@@ -28,7 +29,7 @@ onMounted(async () => {
 <template>
   <section>
     <h1>Invitación a un grupo</h1>
-    <p v-if="estado === 'cargando'">Aceptando la invitación…</p>
+    <CargandoIndicador v-if="estado === 'cargando'" texto="Aceptando la invitación" />
     <template v-else>
       <div class="error-form" role="alert">{{ error }}</div>
       <RouterLink to="/grupos">Ir a mis grupos</RouterLink>

@@ -1,4 +1,5 @@
 <script setup>
+import CargandoIndicador from '../components/CargandoIndicador.vue'
 import { ref, onMounted } from 'vue'
 import BarraMeta from '../components/BarraMeta.vue'
 import { listarMetas, crearMeta, eliminarMeta, registrarAporte } from '../services/metas.js'
@@ -99,16 +100,16 @@ onMounted(cargar)
     <h1>Metas</h1>
     <div v-if="error" class="error-form" role="alert">{{ error }}</div>
 
-    <form class="form-grid" novalidate @submit.prevent="crear">
+    <form class="form-grid panel" novalidate @submit.prevent="crear">
       <label>Nombre <input v-model="nombre" type="text" maxlength="100" /></label>
       <label>Objetivo <input v-model="objetivo" type="text" inputmode="decimal" placeholder="0,00" /></label>
       <label>Fecha límite (opcional) <input v-model="fechaLimite" type="date" /></label>
       <button type="submit" class="primario">Crear meta</button>
     </form>
 
-    <p v-if="cargando">Cargando…</p>
+    <CargandoIndicador v-if="cargando" variante="esqueleto" />
     <p v-else-if="metas.length === 0">Todavía no tenés metas.</p>
-    <ul class="lista">
+    <ul class="lista panel">
       <li v-for="m in metas" :key="m.id" class="item">
         <div class="cabecera">
           <h2>{{ m.nombre }}</h2>

@@ -1,4 +1,5 @@
 <script setup>
+import CargandoIndicador from '../components/CargandoIndicador.vue'
 import { ref, onMounted } from 'vue'
 import BarraPresupuesto from '../components/BarraPresupuesto.vue'
 import { listarCategorias } from '../services/movimientos.js'
@@ -76,7 +77,7 @@ onMounted(async () => {
     <h1>Presupuestos</h1>
     <div v-if="error" class="error-form" role="alert">{{ error }}</div>
 
-    <form class="form-pres" novalidate @submit.prevent="guardar">
+    <form class="form-pres panel" novalidate @submit.prevent="guardar">
       <label>Mes <input v-model="mes" type="month" @change="cargar" /></label>
       <label>Categoría
         <select v-model="categoriaId">
@@ -90,9 +91,9 @@ onMounted(async () => {
       <button type="submit" class="primario">Guardar presupuesto</button>
     </form>
 
-    <p v-if="cargando">Cargando…</p>
+    <CargandoIndicador v-if="cargando" variante="esqueleto" />
     <p v-else-if="estados.length === 0">No hay presupuestos para este mes.</p>
-    <ul class="lista">
+    <ul class="lista panel">
       <li v-for="p in estados" :key="p.id" class="item">
         <div class="cabecera">
           <h2>{{ nombreCategoria(p.categoriaId) }}</h2>

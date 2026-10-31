@@ -74,7 +74,7 @@ onMounted(() => {
         <input v-model="mes" type="month" @change="cargarMes" />
       </label>
       <p v-if="errorMes" class="error-form" role="alert">{{ errorMes }}</p>
-      <p v-if="cargandoMes">Cargando…</p>
+      <CargandoIndicador v-if="cargandoMes" />
       <template v-if="resumen">
         <dl class="cifras">
           <div class="cifra ingresos"><dt>Ingresos</dt><dd data-ingresos><CifraAnimada :valor="resumen.ingresos" /></dd></div>
@@ -98,7 +98,7 @@ onMounted(() => {
         </label>
       </div>
       <p v-if="errorRango" class="error-form" role="alert">{{ errorRango }}</p>
-      <p v-if="cargandoRango">Cargando…</p>
+      <CargandoIndicador v-if="cargandoRango" />
       <template v-if="serie.length">
         <GraficoIngresosGastos :datos="serie" />
         <GraficoAhorroNeto :datos="serie" />

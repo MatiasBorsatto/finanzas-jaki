@@ -161,7 +161,7 @@ onMounted(cargar)
         <h2>Invitar</h2>
         <p>Código de invitación: <strong class="codigo">{{ grupo.codigo }}</strong>
           <button type="button" @click="regenerar">Regenerar código</button></p>
-        <form class="form-inline" novalidate @submit.prevent="enviarInvitacion">
+        <form class="form-inline panel" novalidate @submit.prevent="enviarInvitacion">
           <label>Email <input v-model="emailInvitado" type="email" autocomplete="off" /></label>
           <button type="submit">Invitar por email</button>
         </form>
@@ -169,7 +169,7 @@ onMounted(cargar)
 
       <div class="bloque">
         <h2>Miembros</h2>
-        <ul class="lista">
+        <ul class="lista panel">
           <li v-for="m in grupo.miembros" :key="m.usuarioId" class="fila">
             <span class="nombre">{{ m.nombre }} <small>({{ m.rol === 'admin' ? 'administrador' : 'miembro' }})</small></span>
             <span v-if="esAdmin && m.usuarioId !== usuarioId" class="acciones">

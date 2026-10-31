@@ -1,4 +1,5 @@
 <script setup>
+import CargandoIndicador from '../components/CargandoIndicador.vue'
 import { ref, onMounted } from 'vue'
 import { listarTarjetas, crearTarjeta, eliminarTarjeta } from '../services/tarjetas.js'
 
@@ -68,16 +69,16 @@ onMounted(cargar)
     <h1>Tarjetas</h1>
     <div v-if="error" class="error-form" role="alert">{{ error }}</div>
 
-    <form class="form-tarjeta" novalidate @submit.prevent="crear">
+    <form class="form-tarjeta panel" novalidate @submit.prevent="crear">
       <label>Nombre <input v-model="nombre" name="nombre" type="text" maxlength="60" /></label>
       <label>Día de cierre <input v-model="diaCierre" name="diaCierre" type="number" min="1" max="31" /></label>
       <label>Día de vencimiento <input v-model="diaVencimiento" name="diaVencimiento" type="number" min="1" max="31" /></label>
       <button type="submit" class="primario">Agregar tarjeta</button>
     </form>
 
-    <p v-if="cargando">Cargando...</p>
+    <CargandoIndicador v-if="cargando" variante="esqueleto" />
     <p v-else-if="!tarjetas.length" class="vacio">Todavía no cargaste tarjetas.</p>
-    <ul v-else class="lista">
+    <ul v-else class="lista panel">
       <li v-for="t in tarjetas" :key="t.id" class="item">
         <div>
           <strong>{{ t.nombre }}</strong>

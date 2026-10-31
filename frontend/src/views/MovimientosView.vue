@@ -133,7 +133,7 @@ onMounted(async () => {
       </label>
     </form>
 
-    <p v-if="cargando">Cargando…</p>
+    <CargandoIndicador v-if="cargando" variante="esqueleto" />
     <TablaMovimientos :movimientos="movimientos" :categorias="categorias" @editar="editando = $event" @eliminar="eliminar" />
 
     <div v-if="total > LIMITE" class="paginas">
