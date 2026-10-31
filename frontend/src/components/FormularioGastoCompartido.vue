@@ -1,4 +1,5 @@
 <script setup>
+import CampoMonto from './CampoMonto.vue'
 import { ref, computed, watch } from 'vue'
 import { formatearMonto, normalizarMonto, aCentavos, deCentavos, hoyLocal } from '../utils/formato.js'
 
@@ -113,7 +114,7 @@ function enviar() {
   <form class="form-comp" novalidate @submit.prevent="enviar">
     <div v-if="error" class="error-form" role="alert">{{ error }}</div>
     <label>Monto total
-      <input v-model="monto" name="monto" type="text" inputmode="decimal" placeholder="0,00" />
+      <CampoMonto v-model="monto" name="monto" />
     </label>
     <label>Fecha
       <input v-model="fecha" name="fecha" type="date" />
@@ -143,13 +144,10 @@ function enviar() {
       <li v-for="m in miembros" :key="m.usuarioId">
         <span class="nombre">{{ m.nombre }}</span>
         <span v-if="modo === 'igual'" data-reparto>{{ igual[m.usuarioId] ? formatearMonto(igual[m.usuarioId]) : '—' }}</span>
-        <input
+        <CampoMonto
           v-else
           v-model="personalizados[m.usuarioId]"
           :name="`monto-${m.usuarioId}`"
-          type="text"
-          inputmode="decimal"
-          placeholder="0,00"
           :aria-label="`Monto de ${m.nombre}`"
         />
         <select v-model="categoriasPart[m.usuarioId]" :name="`categoria-${m.usuarioId}`" :aria-label="`Categoría de ${m.nombre}`">

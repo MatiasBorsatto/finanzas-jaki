@@ -1,4 +1,5 @@
 <script setup>
+import CampoMonto from './CampoMonto.vue'
 import { ref } from 'vue'
 import { normalizarMonto, hoyLocal } from '../utils/formato.js'
 import { obtenerGrupo } from '../services/grupos.js'
@@ -93,7 +94,7 @@ function enviar() {
       </select>
     </label>
     <label>Monto
-      <input v-model="monto" name="monto" type="text" inputmode="decimal" placeholder="0,00" />
+      <CampoMonto v-model="monto" name="monto" />
     </label>
     <label>Fecha
       <input v-model="fecha" name="fecha" type="date" />

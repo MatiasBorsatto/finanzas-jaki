@@ -1,4 +1,6 @@
 <script setup>
+import CampoMonto from '../components/CampoMonto.vue'
+import { confirmar } from '../services/dialogo.js'
 import CargandoIndicador from '../components/CargandoIndicador.vue'
 import { ref, onMounted } from 'vue'
 import BarraPresupuesto from '../components/BarraPresupuesto.vue'
@@ -52,7 +54,7 @@ async function guardar() {
 }
 
 async function eliminar(p) {
-  if (!window.confirm('¿Eliminar este presupuesto?')) return
+  if (!(await confirmar('¿Eliminar este presupuesto?'))) return
   error.value = ''
   try {
     await eliminarPresupuesto(p.id)
@@ -86,7 +88,7 @@ onMounted(async () => {
         </select>
       </label>
       <label>Límite mensual
-        <input v-model="monto" type="text" inputmode="decimal" placeholder="0,00" />
+        <CampoMonto v-model="monto" />
       </label>
       <button type="submit" class="primario">Guardar presupuesto</button>
     </form>

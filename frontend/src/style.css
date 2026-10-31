@@ -130,3 +130,22 @@ a:hover { text-decoration: underline; }
   box-shadow: var(--sombra);
   padding: 20px;
 }
+
+/* Jerarquía del contenido: ancho de lectura y bloques separados por espacio uniforme */
+main.contenido > section { position: relative; max-width: 1120px; }
+main.contenido > section > h1 { margin-bottom: 24px; }
+main.contenido > section > section,
+main.contenido > section > .panel { margin-top: 0; }
+form.panel { display: grid; gap: 14px; }
+form.panel label { display: grid; gap: 6px; color: var(--texto-suave); font-size: 0.9rem; font-weight: 500; min-width: 0; }
+form.panel input, form.panel select { width: 100%; min-height: 42px; padding: 0 12px; }
+
+/* Trabajo en curso: los botones no responden y los de envío muestran un giro */
+body.procesando button { pointer-events: none; opacity: 0.8; }
+body.procesando button[type="submit"] { position: relative; color: transparent !important; }
+body.procesando button[type="submit"]::after {
+  content: ''; position: absolute; top: 50%; left: 50%; width: 18px; height: 18px; margin: -9px 0 0 -9px;
+  border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%;
+  color: var(--primario-texto); animation: giro-boton 0.7s linear infinite;
+}
+@keyframes giro-boton { to { transform: rotate(360deg); } }

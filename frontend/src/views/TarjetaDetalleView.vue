@@ -1,4 +1,5 @@
 <script setup>
+import CampoMonto from '../components/CampoMonto.vue'
 import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import FormularioCompra from '../components/FormularioCompra.vue'
@@ -132,7 +133,7 @@ onMounted(async () => {
 
     <form class="pago" novalidate @submit.prevent="pagar">
       <h2>Registrar pago del resumen</h2>
-      <label>Monto <input v-model="montoPago" name="montoPago" type="text" inputmode="decimal" placeholder="0,00" /></label>
+      <label>Monto <CampoMonto v-model="montoPago" name="montoPago" /></label>
       <label>Fecha <input v-model="fechaPago" name="fechaPago" type="date" /></label>
       <button type="submit" class="primario">Registrar pago</button>
     </form>

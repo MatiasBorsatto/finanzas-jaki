@@ -2,6 +2,7 @@
 import { useRouter } from 'vue-router'
 import { useSesion } from '../stores/sesion.js'
 import CampanaNotificaciones from './CampanaNotificaciones.vue'
+import IconosFlotantes from './IconosFlotantes.vue'
 import { entrarPagina, salirPagina } from '../motion/movimiento.js'
 
 const router = useRouter()
@@ -58,6 +59,7 @@ async function salir() {
       </button>
     </nav>
     <main class="contenido">
+      <IconosFlotantes />
       <RouterView v-slot="{ Component, route }">
         <Transition :css="false" mode="out-in" @enter="entrarPagina" @leave="salirPagina">
           <component :is="Component" :key="route.path" />
@@ -96,7 +98,8 @@ async function salir() {
 .salir { margin-top: 0; color: var(--sidebar-texto); font: inherit; }
 .salir:hover { color: #fda4af; }
 
-.contenido { flex: 1; min-width: 0; padding: 32px 36px; }
+.contenido { position: relative; isolation: isolate; flex: 1; min-width: 0; padding: 32px 36px; }
+.contenido > :deep(*) { position: relative; max-width: 1120px; }
 
 @media (min-width: 768px) and (max-width: 1023px) {
   .navegacion { width: 196px; padding: 16px 10px; }

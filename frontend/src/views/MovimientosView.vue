@@ -1,4 +1,5 @@
 <script setup>
+import { confirmar } from '../services/dialogo.js'
 import { ref, reactive, onMounted } from 'vue'
 import FormularioMovimiento from '../components/FormularioMovimiento.vue'
 import TablaMovimientos from '../components/TablaMovimientos.vue'
@@ -68,7 +69,7 @@ async function guardarCompartido({ grupoId, datos }) {
 }
 
 async function eliminar(mov) {
-  if (!window.confirm('¿Eliminar este movimiento?')) return
+  if (!(await confirmar('¿Eliminar este movimiento?'))) return
   error.value = ''
   try {
     await eliminarMovimiento(mov.id)

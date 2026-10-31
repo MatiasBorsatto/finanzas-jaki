@@ -1,4 +1,6 @@
 <script setup>
+import CampoMonto from '../components/CampoMonto.vue'
+import { confirmar } from '../services/dialogo.js'
 import CargandoIndicador from '../components/CargandoIndicador.vue'
 import { ref, onMounted } from 'vue'
 import BarraMeta from '../components/BarraMeta.vue'
@@ -82,7 +84,7 @@ async function aportar(meta) {
 }
 
 async function eliminar(meta) {
-  if (!window.confirm('¿Eliminar esta meta y sus aportes?')) return
+  if (!(await confirmar('¿Eliminar esta meta y sus aportes?'))) return
   error.value = ''
   try {
     await eliminarMeta(meta.id)
@@ -102,7 +104,7 @@ onMounted(cargar)
 
     <form class="form-grid panel" novalidate @submit.prevent="crear">
       <label>Nombre <input v-model="nombre" type="text" maxlength="100" /></label>
-      <label>Objetivo <input v-model="objetivo" type="text" inputmode="decimal" placeholder="0,00" /></label>
+      <label>Objetivo <CampoMonto v-model="objetivo" /></label>
       <label>Fecha límite (opcional) <input v-model="fechaLimite" type="date" /></label>
       <button type="submit" class="primario">Crear meta</button>
     </form>
@@ -124,7 +126,7 @@ onMounted(cargar)
               <option value="retiro">Retiro</option>
             </select>
           </label>
-          <label>Monto <input v-model="formAporte(m.id).monto" type="text" inputmode="decimal" placeholder="0,00" /></label>
+          <label>Monto <CampoMonto v-model="formAporte(m.id).monto" /></label>
           <label>Fecha <input v-model="formAporte(m.id).fecha" type="date" /></label>
           <button type="submit">Registrar</button>
         </form>

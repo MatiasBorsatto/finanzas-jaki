@@ -1,4 +1,5 @@
 <script setup>
+import CampoMonto from './CampoMonto.vue'
 import { ref } from 'vue'
 import { normalizarMonto, hoyLocal } from '../utils/formato.js'
 
@@ -47,7 +48,7 @@ function enviar() {
   <form class="form-compra" novalidate @submit.prevent="enviar">
     <div v-if="error" class="error-form" role="alert">{{ error }}</div>
     <label>Monto total
-      <input v-model="montoTotal" name="montoTotal" type="text" inputmode="decimal" placeholder="0,00" />
+      <CampoMonto v-model="montoTotal" name="montoTotal" />
     </label>
     <label>Cuotas
       <input v-model="cuotas" name="cuotas" type="number" min="1" max="60" step="1" />

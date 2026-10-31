@@ -1,4 +1,5 @@
 <script setup>
+import CampoMonto from './CampoMonto.vue'
 import { ref } from 'vue'
 import { formatearMonto, normalizarMonto, hoyLocal } from '../utils/formato.js'
 
@@ -64,7 +65,7 @@ function enviar() {
           <option v-for="m in miembros" :key="m.usuarioId" :value="m.usuarioId">{{ m.nombre }}</option>
         </select>
       </label>
-      <label>Monto <input v-model="monto" name="monto" type="text" inputmode="decimal" placeholder="0,00" /></label>
+      <label>Monto <CampoMonto v-model="monto" name="monto" /></label>
       <label>Fecha <input v-model="fecha" name="fecha" type="date" /></label>
       <label>Nota (opcional) <input v-model="nota" name="nota" type="text" maxlength="255" /></label>
       <button type="submit" class="primario">Registrar pago</button>

@@ -1,6 +1,17 @@
+import { red } from './red.js'
 const SIN_REFRESCO = ['/auth/refresh', '/auth/login']
 
+// Cada petición cuenta como trabajo pendiente mientras dura, aunque falle.
 async function pedir(metodo, url, cuerpo, reintento = false) {
+  red.pendientes++
+  try {
+    return await pedirSinContar(metodo, url, cuerpo, reintento)
+  } finally {
+    red.pendientes--
+  }
+}
+
+async function pedirSinContar(metodo, url, cuerpo, reintento = false) {
   const opciones = { method: metodo, credentials: 'include', headers: {} }
   if (cuerpo !== undefined) {
     opciones.headers['Content-Type'] = 'application/json'

@@ -77,7 +77,7 @@ onMounted(cargar)
             </button>
           </li>
         </ul>
-        <RouterLink to="/perfil" class="ir-perfil" @click="abierta = false">Mi perfil</RouterLink>
+        <RouterLink to="/perfil" class="ir-perfil solo-movil" @click="abierta = false">Mi perfil</RouterLink>
       </div>
     </Transition>
   </div>
@@ -111,6 +111,8 @@ ul { list-style: none; margin: 0; padding: 0; }
 li { display: flex; flex-direction: column; gap: 4px; padding: 8px; border-bottom: 1px solid var(--borde); }
 li.leida { color: var(--texto-suave); }
 .vacio, .error { margin: 0; padding: 8px; }
+.solo-movil { display: none; }
+@media (max-width: 767px) { .solo-movil { display: flex; } }
 .ir-perfil {
   display: flex; align-items: center; min-height: 44px; margin-top: 4px; padding: 8px;
   border-top: 1px solid var(--borde); color: var(--texto); text-decoration: none;

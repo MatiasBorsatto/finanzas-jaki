@@ -1,4 +1,5 @@
 <script setup>
+import { confirmar } from '../services/dialogo.js'
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useSesion } from '../stores/sesion.js'
@@ -85,8 +86,8 @@ const guardarEdicion = (datos) =>
     aviso.value = 'Gasto compartido actualizado.'
   }, 'No se pudo actualizar el gasto.')
 
-const eliminarGasto = (g) => {
-  if (!window.confirm(`¿Eliminar el gasto "${g.descripcion || 'sin descripción'}"? Se recalcularán los saldos.`)) return
+const eliminarGasto = async (g) => {
+  if (!(await confirmar(`¿Eliminar el gasto "${g.descripcion || 'sin descripción'}"? Se recalcularán los saldos.`))) return
   return accion(async () => {
     await eliminarGastoCompartido(id, g.id)
     if (gastoEnEdicion.value?.id === g.id) gastoEnEdicion.value = null
@@ -112,8 +113,8 @@ async function recargarMiembros() {
   grupo.value = await obtenerGrupo(id)
 }
 
-const quitar = (m) => {
-  if (!window.confirm(`¿Quitar a ${m.nombre} del grupo?`)) return
+const quitar = async (m) => {
+  if (!(await confirmar(`¿Quitar a ${m.nombre} del grupo?`))) return
   return accion(async () => {
     await quitarMiembro(id, m.usuarioId)
     await recargarMiembros()
@@ -139,8 +140,8 @@ const enviarInvitacion = () => {
   }, 'No se pudo enviar la invitación.')
 }
 
-const salir = () => {
-  if (!window.confirm('¿Salir de este grupo?')) return
+const salir = async () => {
+  if (!(await confirmar('¿Salir de este grupo?'))) return
   return accion(async () => {
     await salirDeGrupo(id)
     await router.push('/grupos')

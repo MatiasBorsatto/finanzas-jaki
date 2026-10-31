@@ -1,4 +1,5 @@
 <script setup>
+import { confirmar } from '../services/dialogo.js'
 import CargandoIndicador from '../components/CargandoIndicador.vue'
 import { ref, onMounted } from 'vue'
 import { listarTarjetas, crearTarjeta, eliminarTarjeta } from '../services/tarjetas.js'
@@ -49,7 +50,7 @@ async function crear() {
 }
 
 async function eliminar(t) {
-  if (!window.confirm(`¿Eliminar la tarjeta ${t.nombre}?`)) return
+  if (!(await confirmar(`¿Eliminar la tarjeta ${t.nombre}?`))) return
   error.value = ''
   try {
     await eliminarTarjeta(t.id)
