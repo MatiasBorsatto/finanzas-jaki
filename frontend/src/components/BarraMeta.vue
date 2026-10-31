@@ -1,6 +1,7 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { formatearMonto } from '../utils/formato.js'
+import { crecerBarra } from '../motion/movimiento.js'
 
 // porcentaje y restante vienen calculados por la API; acá solo se muestran.
 const props = defineProps({
@@ -14,6 +15,9 @@ const porcentajeTexto = computed(() => String(props.porcentaje).replace('.', ','
 // Solo para dibujar la barra.
 const ancho = computed(() => Math.max(0, Math.min(props.porcentaje, 100)))
 const cumplida = computed(() => props.porcentaje >= 100)
+const relleno = ref(null)
+
+onMounted(() => crecerBarra(relleno.value, ancho.value))
 </script>
 
 <template>
@@ -26,7 +30,7 @@ const cumplida = computed(() => props.porcentaje >= 100)
       :aria-valuenow="ancho"
       :aria-valuetext="`${porcentajeTexto} %`"
     >
-      <div class="relleno" :style="{ width: `${ancho}%` }"></div>
+      <div ref="relleno" class="relleno" :style="{ width: `${ancho}%` }"></div>
     </div>
     <p class="detalle">
       <strong>{{ porcentajeTexto }} %</strong>

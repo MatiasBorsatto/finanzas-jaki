@@ -1,6 +1,7 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { formatearMonto } from '../utils/formato.js'
+import { crecerBarra } from '../motion/movimiento.js'
 
 const props = defineProps({
   montoLimite: { type: String, required: true },
@@ -15,6 +16,9 @@ const estado = computed(() => (props.alerta === '100' ? 'error' : props.alerta =
 const etiqueta = computed(() =>
   props.alerta === '100' ? 'Superado' : props.alerta === '80' ? 'Cerca del límite' : 'En rango'
 )
+const relleno = ref(null)
+
+onMounted(() => crecerBarra(relleno.value, ancho.value))
 </script>
 
 <template>
@@ -28,7 +32,7 @@ const etiqueta = computed(() =>
       :aria-valuenow="ancho"
       :aria-valuetext="`${props.porcentaje}% - ${etiqueta}`"
     >
-      <div class="relleno" :style="{ width: `${ancho}%` }"></div>
+      <div ref="relleno" class="relleno" :style="{ width: `${ancho}%` }"></div>
     </div>
     <p class="detalle">
       <strong>{{ porcentaje }}%</strong>

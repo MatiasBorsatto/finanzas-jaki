@@ -1,6 +1,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { listarNotificaciones, marcarLeida } from '../services/notificaciones.js'
+import { abrirPanel, cerrarPanel } from '../motion/movimiento.js'
 
 const notificaciones = ref([])
 const abierta = ref(false)
@@ -48,19 +49,21 @@ onMounted(cargar)
       <span aria-hidden="true">🔔</span>
       <span v-if="noLeidas > 0" class="contador" data-testid="contador">{{ noLeidas }}</span>
     </button>
-    <div v-if="abierta" id="panel-notificaciones" class="panel" role="region" aria-label="Notificaciones" @keydown.esc="cerrar">
-      <p v-if="error" class="error" role="alert">{{ error }}</p>
-      <p v-if="notificaciones.length === 0" class="vacio">No tenés notificaciones.</p>
-      <ul v-else>
-        <li v-for="n in notificaciones" :key="n.id" :class="{ leida: n.leida }">
-          <span>{{ n.mensaje }}</span>
-          <button v-if="!n.leida" type="button" :data-testid="`marcar-${n.id}`" @click="marcar(n)">
-            Marcar como leída
-          </button>
-        </li>
-      </ul>
-      <RouterLink to="/perfil" class="ir-perfil" @click="abierta = false">Mi perfil</RouterLink>
-    </div>
+    <Transition :css="false" @enter="abrirPanel" @leave="cerrarPanel">
+      <div v-if="abierta" id="panel-notificaciones" class="panel" role="region" aria-label="Notificaciones" @keydown.esc="cerrar">
+        <p v-if="error" class="error" role="alert">{{ error }}</p>
+        <p v-if="notificaciones.length === 0" class="vacio">No tenés notificaciones.</p>
+        <ul v-else>
+          <li v-for="n in notificaciones" :key="n.id" :class="{ leida: n.leida }">
+            <span>{{ n.mensaje }}</span>
+            <button v-if="!n.leida" type="button" :data-testid="`marcar-${n.id}`" @click="marcar(n)">
+              Marcar como leída
+            </button>
+          </li>
+        </ul>
+        <RouterLink to="/perfil" class="ir-perfil" @click="abierta = false">Mi perfil</RouterLink>
+      </div>
+    </Transition>
   </div>
 </template>
 

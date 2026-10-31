@@ -2,6 +2,7 @@
 import { useRouter } from 'vue-router'
 import { useSesion } from '../stores/sesion.js'
 import CampanaNotificaciones from './CampanaNotificaciones.vue'
+import { entrarPagina, salirPagina } from '../motion/movimiento.js'
 
 const router = useRouter()
 const sesion = useSesion()
@@ -29,7 +30,13 @@ async function salir() {
       <RouterLink to="/perfil" class="enlace solo-escritorio">Perfil</RouterLink>
       <button class="enlace salir" type="button" @click="salir">Salir</button>
     </nav>
-    <main class="contenido"><RouterView /></main>
+    <main class="contenido">
+      <RouterView v-slot="{ Component, route }">
+        <Transition :css="false" mode="out-in" @enter="entrarPagina" @leave="salirPagina">
+          <component :is="Component" :key="route.path" />
+        </Transition>
+      </RouterView>
+    </main>
   </div>
 </template>
 

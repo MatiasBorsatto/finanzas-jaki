@@ -3,8 +3,8 @@ import { ref, onMounted } from 'vue'
 import GraficoIngresosGastos from '../charts/GraficoIngresosGastos.vue'
 import GraficoGastosPorCategoria from '../charts/GraficoGastosPorCategoria.vue'
 import GraficoAhorroNeto from '../charts/GraficoAhorroNeto.vue'
+import CifraAnimada from '../components/CifraAnimada.vue'
 import { resumenMensual, serieHistorica } from '../services/estadisticas.js'
-import { formatearMonto } from '../utils/formato.js'
 
 const MAX_MESES = 24
 const aMes = (fecha) => `${fecha.getFullYear()}-${String(fecha.getMonth() + 1).padStart(2, '0')}`
@@ -77,10 +77,10 @@ onMounted(() => {
       <p v-if="cargandoMes">Cargando…</p>
       <template v-if="resumen">
         <dl class="cifras">
-          <div><dt>Ingresos</dt><dd data-ingresos>{{ formatearMonto(resumen.ingresos) }}</dd></div>
-          <div><dt>Gastos</dt><dd data-gastos>{{ formatearMonto(resumen.gastos) }}</dd></div>
-          <div><dt>Ahorro neto</dt><dd data-ahorro>{{ formatearMonto(resumen.ahorroNeto) }}</dd></div>
-          <div><dt>Aportes a metas</dt><dd data-aportes>{{ formatearMonto(resumen.aportesMetas) }}</dd></div>
+          <div><dt>Ingresos</dt><dd data-ingresos><CifraAnimada :valor="resumen.ingresos" /></dd></div>
+          <div><dt>Gastos</dt><dd data-gastos><CifraAnimada :valor="resumen.gastos" /></dd></div>
+          <div><dt>Ahorro neto</dt><dd data-ahorro><CifraAnimada :valor="resumen.ahorroNeto" /></dd></div>
+          <div><dt>Aportes a metas</dt><dd data-aportes><CifraAnimada :valor="resumen.aportesMetas" /></dd></div>
         </dl>
         <p v-if="resumen.gastosPorCategoria.length === 0">No hay gastos en este mes.</p>
         <GraficoGastosPorCategoria v-else :datos="resumen.gastosPorCategoria" />
