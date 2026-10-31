@@ -1,11 +1,21 @@
 import { red } from './red.js'
+import { avisar } from './avisos.js'
 const SIN_REFRESCO = ['/auth/refresh', '/auth/login']
 
 // Cada petición cuenta como trabajo pendiente mientras dura, aunque falle.
+// Las acciones que cambian datos avisan con una alerta; los errores de login quedan en el formulario.
+const MENSAJE_EXITO = { POST: 'Guardado', PUT: 'Cambios guardados', PATCH: 'Cambios guardados', DELETE: 'Eliminado' }
+
 async function pedir(metodo, url, cuerpo, reintento = false) {
   red.pendientes++
+  const esAuth = url.startsWith('/auth/')
   try {
-    return await pedirSinContar(metodo, url, cuerpo, reintento)
+    const datos = await pedirSinContar(metodo, url, cuerpo, reintento)
+    if (metodo !== 'GET' && !esAuth) avisar(MENSAJE_EXITO[metodo] ?? 'Listo')
+    return datos
+  } catch (error) {
+    if (!esAuth && metodo !== 'GET') avisar(error.mensaje ?? 'No pudimos conectarnos. Revisá tu conexión.', 'error')
+    throw error
   } finally {
     red.pendientes--
   }

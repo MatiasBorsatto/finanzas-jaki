@@ -2,12 +2,14 @@
   <IndicadorRed />
   <RouterView />
   <DialogoConfirmacion />
+  <AvisosFlotantes />
 </template>
 
 <script setup>
 import { onBeforeUnmount, onMounted, watch } from 'vue'
 import DialogoConfirmacion from './components/DialogoConfirmacion.vue'
 import IndicadorRed from './components/IndicadorRed.vue'
+import AvisosFlotantes from './components/AvisosFlotantes.vue'
 import { red } from './services/red.js'
 
 // Mientras hay peticiones en curso, un segundo envío de formulario se descarta para no duplicar datos.

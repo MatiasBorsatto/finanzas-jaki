@@ -99,7 +99,6 @@ async function salir() {
 .salir:hover { color: #fda4af; }
 
 .contenido { position: relative; isolation: isolate; flex: 1; min-width: 0; padding: 32px 36px; }
-.contenido > :deep(*) { position: relative; max-width: 1120px; }
 
 @media (min-width: 768px) and (max-width: 1023px) {
   .navegacion { width: 196px; padding: 16px 10px; }
