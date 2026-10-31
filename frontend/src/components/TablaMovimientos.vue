@@ -65,7 +65,7 @@ function signo(m) {
 .acciones { display: flex; gap: 8px; }
 button { padding: 6px 12px; border-radius: 8px; border: 1px solid var(--borde); background: var(--superficie); color: var(--texto); cursor: pointer; }
 .tarjetas { display: none; list-style: none; margin: 0; padding: 0; gap: 10px; }
-.tarjeta { padding: 12px; background: var(--superficie); border: 1px solid var(--borde); border-radius: 12px; display: grid; gap: 6px; overflow-wrap: anywhere; }
+.tarjeta { padding: 14px; background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio-chico); box-shadow: var(--sombra); display: grid; gap: 6px; overflow-wrap: anywhere; }
 .fila { display: flex; justify-content: space-between; gap: 8px; }
 .suave { color: var(--texto-suave); font-size: 0.9rem; }
 .vacio { color: var(--texto-suave); }

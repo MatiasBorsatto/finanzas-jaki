@@ -45,7 +45,7 @@ onMounted(() => crecerBarra(relleno.value, ancho.value))
 
 <style scoped>
 .barra { height: 12px; border-radius: 6px; background: var(--borde); overflow: hidden; }
-.relleno { height: 100%; background: var(--primario); }
+.relleno { height: 100%; background: var(--gradiente-primario); border-radius: 6px; }
 .barra.advertencia .relleno { background: var(--advertencia); }
 .barra.error .relleno { background: var(--error); }
 .detalle { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; margin: 6px 0 0; font-size: 0.9rem; }

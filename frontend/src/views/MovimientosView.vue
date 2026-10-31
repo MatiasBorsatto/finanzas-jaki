@@ -116,7 +116,7 @@ onMounted(async () => {
       @cancelar="editando = null"
     />
 
-    <form class="filtros" @submit.prevent="filtrar">
+    <form class="filtros panel" @submit.prevent="filtrar">
       <label>Mes <input v-model="filtros.mes" type="month" @change="filtrar" /></label>
       <label>Tipo
         <select v-model="filtros.tipo" @change="filtrar">

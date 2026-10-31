@@ -6,13 +6,26 @@ import { entrarPagina, salirPagina } from '../motion/movimiento.js'
 
 const router = useRouter()
 const sesion = useSesion()
+
+// Trazos SVG de 24x24 (estilo línea). Cada elemento del arreglo es un trazo.
+const iconos = {
+  movimientos: ['M7 17 17 7', 'M9 7h8v8'],
+  presupuestos: ['M21 12A9 9 0 1 1 12 3v9h9'],
+  tarjetas: ['M3 6h18v12H3z', 'M3 10h18', 'M7 15h4'],
+  metas: ['M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18', 'M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8', 'M12 11a1 1 0 1 0 0 2 1 1 0 0 0 0-2'],
+  grupos: ['M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8', 'M2 21a7 7 0 0 1 14 0', 'M16 3.1a4 4 0 0 1 0 7.8', 'M22 21a7 7 0 0 0-5-6.7'],
+  estadisticas: ['M4 20V10', 'M10 20V4', 'M16 20v-7', 'M2 20h20'],
+  perfil: ['M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8', 'M4 21a8 8 0 0 1 16 0'],
+  salir: ['M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4', 'M16 17l5-5-5-5', 'M21 12H9']
+}
+
 const enlaces = [
-  { to: '/movimientos', texto: 'Movimientos' },
-  { to: '/presupuestos', texto: 'Presupuestos' },
-  { to: '/tarjetas', texto: 'Tarjetas' },
-  { to: '/metas', texto: 'Metas' },
-  { to: '/grupos', texto: 'Grupos' },
-  { to: '/estadisticas', texto: 'Estadísticas' }
+  { to: '/movimientos', texto: 'Movimientos', icono: 'movimientos' },
+  { to: '/presupuestos', texto: 'Presupuestos', icono: 'presupuestos' },
+  { to: '/tarjetas', texto: 'Tarjetas', icono: 'tarjetas' },
+  { to: '/metas', texto: 'Metas', icono: 'metas' },
+  { to: '/grupos', texto: 'Grupos', icono: 'grupos' },
+  { to: '/estadisticas', texto: 'Estadísticas', icono: 'estadisticas' }
 ]
 
 async function salir() {
@@ -24,11 +37,23 @@ async function salir() {
 <template>
   <div class="layout">
     <nav class="navegacion" aria-label="Principal">
-      <strong class="marca">Platita</strong>
+      <div class="marca">
+        <span class="logo" aria-hidden="true">P</span>
+        <strong>Platita</strong>
+      </div>
       <CampanaNotificaciones />
-      <RouterLink v-for="e in enlaces" :key="e.to" :to="e.to" class="enlace">{{ e.texto }}</RouterLink>
-      <RouterLink to="/perfil" class="enlace solo-escritorio">Perfil</RouterLink>
-      <button class="enlace salir" type="button" @click="salir">Salir</button>
+      <RouterLink v-for="e in enlaces" :key="e.to" :to="e.to" class="enlace">
+        <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path v-for="d in iconos[e.icono]" :key="d" :d="d" /></svg>
+        <span>{{ e.texto }}</span>
+      </RouterLink>
+      <RouterLink to="/perfil" class="enlace solo-escritorio">
+        <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path v-for="d in iconos.perfil" :key="d" :d="d" /></svg>
+        <span>Perfil</span>
+      </RouterLink>
+      <button class="enlace salir" type="button" @click="salir">
+        <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path v-for="d in iconos.salir" :key="d" :d="d" /></svg>
+        <span>Salir</span>
+      </button>
     </nav>
     <main class="contenido">
       <RouterView v-slot="{ Component, route }">
@@ -42,33 +67,54 @@ async function salir() {
 
 <style scoped>
 .layout { display: flex; min-height: 100vh; }
+
 .navegacion {
-  display: flex; flex-direction: column; gap: 4px; width: 220px; padding: 16px;
-  background: var(--superficie); border-right: 1px solid var(--borde);
+  position: sticky; top: 0; align-self: flex-start;
+  display: flex; flex-direction: column; gap: 4px; width: 232px; height: 100vh; padding: 20px 14px;
+  background: var(--sidebar-fondo); color: var(--sidebar-texto);
+  box-shadow: 4px 0 24px rgba(8, 12, 30, 0.18);
 }
-.marca { margin-bottom: 16px; }
+
+.marca { display: flex; align-items: center; gap: 10px; margin: 4px 8px 22px; color: #ffffff; font-size: 1.1rem; }
+.logo {
+  display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px;
+  background: var(--gradiente-primario); color: #04201a; font-weight: 800;
+  box-shadow: 0 6px 16px rgba(20, 184, 166, 0.35);
+}
+
 .enlace {
-  padding: 10px 12px; border-radius: 8px; color: var(--texto); text-decoration: none;
-  background: none; border: 0; text-align: left; cursor: pointer;
+  display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 10px 12px;
+  border-radius: 10px; color: var(--sidebar-texto); text-decoration: none;
+  background: none; border: 0; text-align: left; cursor: pointer; font-weight: 500;
 }
-.enlace.router-link-active { background: var(--primario); color: var(--primario-texto); }
+.enlace:hover { background: rgba(255, 255, 255, 0.06); color: #ffffff; text-decoration: none; }
+.enlace.router-link-active {
+  background: var(--sidebar-activo); color: var(--sidebar-activo-texto); font-weight: 600;
+  box-shadow: inset 3px 0 0 var(--primario);
+}
+.icono { flex: none; width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
 .solo-escritorio { margin-top: auto; }
-.salir { margin-top: 0; color: var(--texto-suave); font: inherit; }
-.contenido { flex: 1; min-width: 0; padding: 24px; }
+.salir { margin-top: 0; color: var(--sidebar-texto); font: inherit; }
+.salir:hover { color: #fda4af; }
+
+.contenido { flex: 1; min-width: 0; padding: 32px 36px; }
 
 @media (max-width: 767px) {
   .layout { flex-direction: column; }
   .marca { display: none; }
   .navegacion {
-    position: fixed; bottom: 0; left: 0; right: 0; width: 100%;
+    position: fixed; bottom: 12px; left: 12px; right: 12px; width: auto; height: auto; z-index: 10;
     display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: stretch;
-    gap: 2px; padding: 6px; border-right: 0; border-top: 1px solid var(--borde); z-index: 10;
+    gap: 2px; padding: 8px; border-radius: 18px; border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: var(--sombra-elevada);
   }
   .enlace {
-    display: flex; align-items: center; justify-content: center; min-height: 44px;
-    padding: 6px 4px; font-size: 0.8rem; text-align: center; overflow-wrap: anywhere;
+    flex-direction: column; justify-content: center; gap: 2px; min-height: 52px;
+    padding: 6px 2px; font-size: 0.72rem; text-align: center; overflow-wrap: anywhere;
   }
+  .enlace.router-link-active { box-shadow: inset 0 -3px 0 var(--primario); }
   .solo-escritorio { display: none; }
-  .contenido { padding: 16px 16px 120px; }
+  .contenido { padding: 20px 16px 130px; }
 }
 </style>

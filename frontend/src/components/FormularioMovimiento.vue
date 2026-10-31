@@ -59,7 +59,7 @@ function enviar() {
 </script>
 
 <template>
-  <div v-if="!movimiento && grupos.length > 0" class="form-mov alcance">
+  <div v-if="!movimiento && grupos.length > 0" class="form-mov alcance panel">
     <label>Alcance
       <select v-model="alcance" name="alcance">
         <option value="personal">Personal</option>
@@ -84,7 +84,7 @@ function enviar() {
       @guardar="emit('guardar-compartido', { grupoId: grupoElegido.id, datos: $event })"
     />
   </template>
-  <form v-else class="form-mov" novalidate @submit.prevent="enviar">
+  <form v-else class="form-mov panel" novalidate @submit.prevent="enviar">
     <div v-if="error" class="error-form" role="alert">{{ error }}</div>
     <label>Tipo
       <select v-model="tipo" name="tipo">

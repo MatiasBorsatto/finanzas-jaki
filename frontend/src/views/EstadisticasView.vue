@@ -77,10 +77,10 @@ onMounted(() => {
       <p v-if="cargandoMes">Cargando…</p>
       <template v-if="resumen">
         <dl class="cifras">
-          <div><dt>Ingresos</dt><dd data-ingresos><CifraAnimada :valor="resumen.ingresos" /></dd></div>
-          <div><dt>Gastos</dt><dd data-gastos><CifraAnimada :valor="resumen.gastos" /></dd></div>
-          <div><dt>Ahorro neto</dt><dd data-ahorro><CifraAnimada :valor="resumen.ahorroNeto" /></dd></div>
-          <div><dt>Aportes a metas</dt><dd data-aportes><CifraAnimada :valor="resumen.aportesMetas" /></dd></div>
+          <div class="cifra ingresos"><dt>Ingresos</dt><dd data-ingresos><CifraAnimada :valor="resumen.ingresos" /></dd></div>
+          <div class="cifra gastos"><dt>Gastos</dt><dd data-gastos><CifraAnimada :valor="resumen.gastos" /></dd></div>
+          <div class="cifra ahorro"><dt>Ahorro neto</dt><dd data-ahorro><CifraAnimada :valor="resumen.ahorroNeto" /></dd></div>
+          <div class="cifra aportes"><dt>Aportes a metas</dt><dd data-aportes><CifraAnimada :valor="resumen.aportesMetas" /></dd></div>
         </dl>
         <p v-if="resumen.gastosPorCategoria.length === 0">No hay gastos en este mes.</p>
         <GraficoGastosPorCategoria v-else :datos="resumen.gastosPorCategoria" />
@@ -111,13 +111,20 @@ onMounted(() => {
 h1 { font-size: 1.5rem; margin-top: 0; }
 h2 { font-size: 1.1rem; }
 .estadisticas { display: grid; gap: 24px; min-width: 0; }
-.bloque { display: grid; gap: 16px; min-width: 0; padding: 16px; background: var(--superficie); border: 1px solid var(--borde); border-radius: 12px; }
+.bloque { display: grid; gap: 16px; min-width: 0; padding: 20px; background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio); box-shadow: var(--sombra); }
 .bloque h2 { margin: 0; }
 .rango { display: flex; flex-wrap: wrap; gap: 12px; }
 .campo { display: grid; gap: 4px; color: var(--texto-suave); font-size: 0.9rem; min-width: 0; }
 .campo input { padding: 10px; background: var(--fondo); color: var(--texto); border: 1px solid var(--borde); border-radius: 8px; max-width: 100%; }
 .cifras { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; margin: 0; }
-.cifras div { padding: 10px; background: var(--fondo); border: 1px solid var(--borde); border-radius: 8px; min-width: 0; }
+.cifra { position: relative; padding: 14px 14px 14px 18px; background: var(--superficie-elevada); border: 1px solid var(--borde); border-radius: var(--radio-chico); min-width: 0; overflow: hidden; }
+.cifra::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--color, var(--primario)); }
+.cifra dt { color: var(--texto-suave); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+.cifra dd { margin: 4px 0 0; font-size: 1.25rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+.ingresos { --color: var(--grafico-1); }
+.gastos { --color: var(--insignia); }
+.ahorro { --color: var(--acento); }
+.aportes { --color: var(--grafico-5); }
 dt { color: var(--texto-suave); font-size: 0.85rem; }
 dd { margin: 4px 0 0; font-weight: 600; overflow-wrap: anywhere; }
 .error-form { padding: 10px; margin: 0; border-radius: 8px; background: var(--error-fondo); color: var(--error); }

@@ -2,9 +2,11 @@
 
 html, body {
   margin: 0;
-  background: var(--fondo);
+  background: var(--fondo-decorado);
+  background-attachment: fixed;
   color: var(--texto);
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
 button, input, select, textarea { font: inherit; }
@@ -14,31 +16,81 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline-offs
 
 button { min-height: 44px; }
 
-.tarjeta-acceso {
-  max-width: 400px;
-  margin: 8vh auto 0;
-  padding: 24px;
-  background: var(--superficie);
-  border: 1px solid var(--borde);
-  border-radius: 12px;
-  width: calc(100% - 32px);
+/* Títulos de página con subrayado de marca */
+main.contenido h1 {
+  position: relative;
+  margin: 0 0 20px;
+  padding-bottom: 12px;
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+main.contenido h1::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 48px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--gradiente-primario);
 }
 
-.tarjeta-acceso h1 { margin-top: 0; font-size: 1.5rem; }
-.tarjeta-acceso label { display: block; margin-bottom: 12px; color: var(--texto-suave); font-size: 0.9rem; }
+/* Campos de formulario coherentes en toda la app */
+input, select, textarea {
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-chico);
+  background: var(--superficie);
+  color: var(--texto);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--primario);
+  box-shadow: 0 0 0 3px var(--primario-suave);
+}
+
+/* Acceso (login, registro, recuperación) */
+.tarjeta-acceso {
+  position: relative;
+  max-width: 420px;
+  margin: 8vh auto 0;
+  padding: 32px 28px 28px;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra-elevada);
+  width: calc(100% - 32px);
+  overflow: hidden;
+}
+.tarjeta-acceso::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 5px;
+  background: var(--gradiente-primario);
+}
+
+.tarjeta-acceso h1 { margin-top: 0; font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em; }
+.tarjeta-acceso label { display: block; margin-bottom: 14px; color: var(--texto-suave); font-size: 0.9rem; font-weight: 500; }
 .tarjeta-acceso input {
-  display: block; width: 100%; margin-top: 4px; padding: 10px;
+  display: block; width: 100%; margin-top: 6px; padding: 11px 12px;
   background: var(--fondo); color: var(--texto);
-  border: 1px solid var(--borde); border-radius: 8px;
+  border: 1px solid var(--borde); border-radius: var(--radio-chico);
 }
 .tarjeta-acceso button {
-  width: 100%; padding: 12px; border: 0; border-radius: 8px; cursor: pointer;
-  background: var(--primario); color: var(--primario-texto); font-weight: 600;
+  width: 100%; padding: 12px; border: 0; border-radius: var(--radio-chico); cursor: pointer;
+  background: var(--gradiente-primario); color: var(--primario-texto); font-weight: 700;
+  box-shadow: 0 6px 16px rgba(10, 159, 122, 0.28);
 }
-.tarjeta-acceso button:disabled { opacity: 0.6; cursor: default; }
-.error-form { padding: 10px; margin-bottom: 12px; border-radius: 8px; background: var(--error-fondo); color: var(--error); }
+.tarjeta-acceso button:hover:not(:disabled) { filter: brightness(1.05); }
+.tarjeta-acceso button:disabled { opacity: 0.6; cursor: default; box-shadow: none; }
+.error-form {
+  padding: 10px 12px; margin-bottom: 12px; border-radius: var(--radio-chico);
+  background: var(--error-fondo); color: var(--error); border: 1px solid currentColor;
+  border-color: color-mix(in srgb, var(--error) 35%, transparent);
+}
 .pie-acceso { margin-bottom: 0; text-align: center; color: var(--texto-suave); }
-.pie-acceso a { color: var(--primario); }
+.pie-acceso a { color: var(--primario); font-weight: 600; }
 
 .solo-lectores {
   position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
@@ -47,7 +99,7 @@ button { min-height: 44px; }
 
 /* Movimiento y retroalimentación */
 button, a, .tarjeta-acceso button {
-  transition: transform 0.15s ease, background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.15s ease, background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
 }
 button:active:not(:disabled) { transform: scale(0.97); }
 a:hover { text-decoration: underline; }
@@ -59,4 +111,13 @@ a:hover { text-decoration: underline; }
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Superficie de contenido: tarjeta blanca con sombra suave */
+.panel {
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  padding: 20px;
 }

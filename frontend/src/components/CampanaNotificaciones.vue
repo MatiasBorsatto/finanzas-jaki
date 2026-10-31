@@ -46,7 +46,11 @@ onMounted(cargar)
       :aria-label="`Notificaciones, ${noLeidas} sin leer`"
       @click="abierta = !abierta"
     >
-      <span aria-hidden="true">🔔</span>
+      <svg class="icono" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+        <path d="M13.7 21a2 2 0 0 1-3.4 0" />
+      </svg>
+      <span class="texto">Notificaciones</span>
       <span v-if="noLeidas > 0" class="contador" data-testid="contador">{{ noLeidas }}</span>
     </button>
     <Transition :css="false" @enter="abrirPanel" @leave="cerrarPanel">
@@ -70,11 +74,21 @@ onMounted(cargar)
 <style scoped>
 .campana-contenedor { position: relative; }
 .campana {
-  position: relative; background: none; border: 0; cursor: pointer; width: 100%; padding: 10px 12px; min-height: 44px; font-size: 1.1rem; color: var(--texto);
+  position: relative; display: flex; align-items: center; gap: 12px; width: 100%; min-height: 44px;
+  padding: 10px 12px; background: none; border: 0; border-radius: 10px; cursor: pointer;
+  color: var(--sidebar-texto); font-weight: 500; text-align: left;
 }
+.campana:hover { background: rgba(255, 255, 255, 0.06); color: #ffffff; }
+.icono { flex: none; width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .contador {
-  position: absolute; top: 2px; right: 2px; min-width: 18px; padding: 0 5px; border-radius: 9px;
-  background: var(--insignia); color: var(--insignia-texto); font-size: 0.75rem; line-height: 18px; text-align: center;
+  position: absolute; top: 6px; left: 22px; min-width: 18px; padding: 0 5px; border-radius: 9px;
+  background: var(--insignia); color: var(--insignia-texto); font-size: 0.72rem; font-weight: 700; line-height: 18px; text-align: center;
+  box-shadow: 0 0 0 2px var(--sidebar-fondo, #111a33);
+}
+@media (max-width: 767px) {
+  .campana { flex-direction: column; justify-content: center; gap: 2px; font-size: 0.72rem; text-align: center; padding: 6px 2px; }
+  .texto { font-size: 0.72rem; }
+  .contador { top: 4px; left: 50%; margin-left: 6px; }
 }
 .panel {
   position: absolute; left: 0; top: 100%; width: 280px; max-height: 320px; overflow: auto; z-index: 20;
