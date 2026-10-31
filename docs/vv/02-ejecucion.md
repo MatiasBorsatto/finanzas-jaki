@@ -56,4 +56,4 @@ Estas suites se ejecutaron después del último cambio de código. Cubren unitar
 - 17 casos ejecutados a mano sobre las funciones: 16 aprobados y 1 fallido (CN-12).
 - 6 casos de campo de monto (CN-16 a CN-21) automatizados en Vitest: 6 aprobados.
 - 1 caso de API ejecutado: fallido (D-01).
-- Suites automatizadas: 288 pruebas aprobadas de 288.
+- Suites automatizadas al ejecutar: 288 pruebas aprobadas de 288. Después de corregir D-01 quedan 291: 211 de backend y 80 de frontend, todas aprobadas.
