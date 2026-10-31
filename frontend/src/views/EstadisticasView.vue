@@ -116,7 +116,7 @@ h2 { font-size: 1.1rem; }
 .rango { display: flex; flex-wrap: wrap; gap: 12px; }
 .campo { display: grid; gap: 4px; color: var(--texto-suave); font-size: 0.9rem; min-width: 0; }
 .campo input { padding: 10px; background: var(--fondo); color: var(--texto); border: 1px solid var(--borde); border-radius: 8px; max-width: 100%; }
-.cifras { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; margin: 0; }
+.cifras { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin: 0; }
 .cifra { position: relative; padding: 14px 14px 14px 18px; background: var(--superficie-elevada); border: 1px solid var(--borde); border-radius: var(--radio-chico); min-width: 0; overflow: hidden; }
 .cifra::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--color, var(--primario)); }
 .cifra dt { color: var(--texto-suave); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }

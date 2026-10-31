@@ -78,7 +78,7 @@ async function salir() {
 .marca { display: flex; align-items: center; gap: 10px; margin: 4px 8px 22px; color: #ffffff; font-size: 1.1rem; }
 .logo {
   display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px;
-  background: var(--primario); color: #04201a; font-weight: 800;
+  background: var(--primario); color: var(--primario-texto); font-weight: 800;
 }
 
 .enlace {
@@ -108,7 +108,7 @@ async function salir() {
   .layout { flex-direction: column; }
   .marca { display: none; }
   .navegacion {
-    position: fixed; bottom: 12px; left: 12px; right: 12px; width: auto; height: auto; z-index: 10;
+    position: fixed; top: auto; bottom: 12px; left: 12px; right: 12px; width: auto; height: auto; z-index: 10;
     display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: stretch;
     gap: 2px; padding: 8px; border-radius: 18px; border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: var(--sombra-elevada);

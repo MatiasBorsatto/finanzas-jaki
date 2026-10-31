@@ -8,13 +8,13 @@
   --borde: #e2e6ee;
 
   /* Marca */
-  --primario: #0a9f7a;
-  --primario-hover: #078a69;
+  --primario: #0b7d63;
+  --primario-hover: #076b54;
   --primario-texto: #ffffff;
   --primario-suave: #e3f7f0;
   --acento: #6d4aff;
   --acento-suave: #ece7ff;
-  --gradiente-primario: linear-gradient(135deg, #0a9f7a 0%, #14b8a6 100%);
+  --gradiente-primario: linear-gradient(135deg, #0b7d63 0%, #0f8f86 100%);
   --gradiente-acento: linear-gradient(135deg, #6d4aff 0%, #a855f7 100%);
 
   /* Navegación */
@@ -24,7 +24,7 @@
   --sidebar-activo-texto: #5eead4;
 
   /* Estados */
-  --error: #d92d20;
+  --error: #b42318;
   --error-fondo: #fef3f2;
   --exito: #067647;
   --exito-fondo: #ecfdf3;

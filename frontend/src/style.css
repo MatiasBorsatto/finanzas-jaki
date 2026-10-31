@@ -16,6 +16,16 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline-offs
 
 button { min-height: 44px; }
 
+/* Botón base: las vistas con estilo propio lo sobrescriben */
+button {
+  padding: 10px 16px; border-radius: var(--radio-chico); border: 1px solid var(--borde);
+  background: var(--superficie); color: var(--texto); font-weight: 600; cursor: pointer;
+}
+button[type="submit"] {
+  background: var(--primario); color: var(--primario-texto); border-color: var(--primario);
+}
+button:disabled { opacity: 0.55; cursor: default; }
+
 /* Títulos de página con subrayado de marca */
 main.contenido h1 {
   position: relative;
